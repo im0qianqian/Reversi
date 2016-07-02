@@ -81,8 +81,8 @@
 	作者：千千
 	版本：v1.2
 	分支：大一C语言课程设计
-	说明：游戏中部分界面可按ESC退出，使用过程中如若发现Bug，请不要忘记在<a href="www.dreamwings.cn">这里</a>留言哦！
-	网站:<a href="www.dreamwings.cn">https://www.dreamwings.cn</a>
+	说明：游戏中部分界面可按ESC退出，使用过程中如若发现Bug，请不要忘记在这里留言哦！
+	网站:https://www.dreamwings.cn
 
 #<h5>已知Bug：<h5>
 	1、ESC必须通过鼠标配合才可以正常退出
