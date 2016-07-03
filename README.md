@@ -82,9 +82,10 @@
 	版本：v1.2
 	分支：大一C语言课程设计
 	说明：游戏中部分界面可按ESC退出，使用过程中如若发现Bug，请不要忘记在这里留言哦！
-	留言：https://www.dreamwings.cn/reversi/3013.html
+	网站：https://www.dreamwings.cn/
 
 #<h5>已知Bug：<h5>
 	1、ESC必须通过鼠标配合才可以正常退出
 	2、可能会出现创建服务器时候 连接失败 的情况
 		
+# <h4>链接<a href="https://www.dreamwings.cn/reversi/3013.html">黑白棋中的AI</a></h4>
