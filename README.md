@@ -88,4 +88,4 @@
 	1、ESC必须通过鼠标配合才可以正常退出
 	2、可能会出现创建服务器时候 连接失败 的情况
 		
-# <h4>链接<a href="https://www.dreamwings.cn/reversi/3013.html">黑白棋中的AI</a></h4>
+# <h4>链接 <a href="https://www.dreamwings.cn/reversi/3013.html">黑白棋中的AI</a></h4>
