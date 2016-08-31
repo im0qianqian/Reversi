@@ -10,28 +10,28 @@
 
 using namespace std;
 
-#define WINDOWS_X 1200	//´°¿Ú´óÐ¡X
-#define WINDOWS_Y 800	//´°¿Ú´óÐ¡Y
+#define WINDOWS_X 1200	//çª—å£å¤§å°X
+#define WINDOWS_Y 800	//çª—å£å¤§å°Y
 
-#define PX 280			//ÆåÅÌÆ«ÒÆÁ¿X
-#define PY 80			//ÆåÅÌÆ«ÒÆÁ¿Y
-#define BBLACK 80		//¿Õ¸ñ´óÐ¡
+#define PX 280			//æ£‹ç›˜åç§»é‡X
+#define PY 80			//æ£‹ç›˜åç§»é‡Y
+#define BBLACK 80		//ç©ºæ ¼å¤§å°
 
-#define CHESSSIZE 25	//Æå×Ó´óÐ¡
-#define SIZE 8			//ÆåÅÌ¸ñÊý
+#define CHESSSIZE 25	//æ£‹å­å¤§å°
+#define SIZE 8			//æ£‹ç›˜æ ¼æ•°
 
 #define ESC 27
 #define ESCEXIT (_kbhit()&&_getch()==ESC)
 
-#pragma comment (lib,"ws2_32.lib")						// ÒýÓÃ Windows Multimedia API
+#pragma comment (lib,"ws2_32.lib")						// å¼•ç”¨ Windows Multimedia API
 #pragma comment(lib,"Winmm.lib")
 
-const int black = 1;	//ºÚÆå
-const int white = 0;	//°×Æå
+const int black = 1;	//é»‘æ£‹
+const int white = 0;	//ç™½æ£‹
 
-int mapp[SIZE][SIZE];		//ÆåÅÌ¾ØÕó´æ´¢
-const int MOVE[8][2] = { { -1, 0 },{ 1, 0 },{ 0, -1 },{ 0, 1 },{ -1, -1 },{ 1, -1 },{ 1, 1 },{ -1, 1 } };	//·½Î»
-const int MAPPOINTCOUNT[8][8] =												//ÆåÅÌ¸÷µãÈ¨Öµ¹ÀÖµ
+int mapp[SIZE][SIZE];		//æ£‹ç›˜çŸ©é˜µå­˜å‚¨
+const int MOVE[8][2] = { { -1, 0 },{ 1, 0 },{ 0, -1 },{ 0, 1 },{ -1, -1 },{ 1, -1 },{ 1, 1 },{ -1, 1 } };	//æ–¹ä½
+const int MAPPOINTCOUNT[8][8] =												//æ£‹ç›˜å„ç‚¹æƒå€¼ä¼°å€¼
 {
 	{90,-60,10,10,10,10,-60,90},
 	{-60,-80,5,5,5,5,-80,-60},
@@ -50,31 +50,31 @@ int expect[SIZE][SIZE];
 SOCKET sockSer;
 SOCKET sockConn;
 
-bool TOINTERNET;						//ÊÇ·ñÓÐÍøÂçÊý¾Ý
-int MYCOLOR;							//ÎÒµÄÑÕÉ« 1ºÚÉ« 0°×É« -1ÆäËû
-int NOWCOLOR;							//µ±Ç°Ö´×ÓÑÕÉ«
-bool TIANEYES;							//ÌìÑÛÄ£Ê½
+bool TOINTERNET;						//æ˜¯å¦æœ‰ç½‘ç»œæ•°æ®
+int MYCOLOR;							//æˆ‘çš„é¢œè‰² 1é»‘è‰² 0ç™½è‰² -1å…¶ä»–
+int NOWCOLOR;							//å½“å‰æ‰§å­é¢œè‰²
+bool TIANEYES;							//å¤©çœ¼æ¨¡å¼
 
-void gameStart();						//º¯ÊýÉùÃ÷
+void gameStart();						//å‡½æ•°å£°æ˜Ž
 class POINT2
 {
 public:
-	void WIN2MAP(POINT2 &MAP)			//½¨Á¢ÆåÅÌÓë¾ØÕóµÄÓ³Éä¹ØÏµ
+	void WIN2MAP(POINT2 &MAP)			//å»ºç«‹æ£‹ç›˜ä¸ŽçŸ©é˜µçš„æ˜ å°„å…³ç³»
 	{
 		MAP.x = (x - PX) / BBLACK;
 		MAP.y = (y - PY) / BBLACK;
 	}
-	void MAP2WIN(POINT2 &WIN)			//½¨Á¢¾ØÕóÓëÆåÅÌµÄÓ³Éä¹ØÏµ
+	void MAP2WIN(POINT2 &WIN)			//å»ºç«‹çŸ©é˜µä¸Žæ£‹ç›˜çš„æ˜ å°„å…³ç³»
 	{
 		WIN.x = PX + x*BBLACK + BBLACK / 2;
 		WIN.y = PY + y*BBLACK + BBLACK / 2;
 	}
-	void INIT(int x, int y)				//²åÈëÔªËØ
+	void INIT(int x, int y)				//æ’å…¥å…ƒç´ 
 	{
 		this->x = x;
 		this->y = y;
 	}
-	void ADD(int x, int y)				//¼ÆËãºÍ
+	void ADD(int x, int y)				//è®¡ç®—å’Œ
 	{
 		this->x += x;
 		this->y += y;
@@ -98,9 +98,9 @@ public:
 	int x, y;
 };
 
-POINT2 LASTCH;								//ÉÏÒ»²½Æå×Ó·½Î»
+POINT2 LASTCH;								//ä¸Šä¸€æ­¥æ£‹å­æ–¹ä½
 
-void mappadd(int x, int y, int color,int MAP[SIZE][SIZE])		//ÏòµØÍ¼ÖÐÌí¼ÓÆå×Ó
+void mappadd(int x, int y, int color,int MAP[SIZE][SIZE])		//å‘åœ°å›¾ä¸­æ·»åŠ æ£‹å­
 {
 	POINT2 WINDOWS2, MAP2;
 	WINDOWS2.INIT(x, y);
@@ -108,10 +108,10 @@ void mappadd(int x, int y, int color,int MAP[SIZE][SIZE])		//ÏòµØÍ¼ÖÐÌí¼ÓÆå×Ó
 	MAP[MAP2.x][MAP2.y] = color ? 1 : -1;
 }
 
-void printcircle(int x, int y, int color,int MAP[SIZE][SIZE])				//»æÖÆÆå×Ó
+void printcircle(int x, int y, int color,int MAP[SIZE][SIZE])				//ç»˜åˆ¶æ£‹å­
 {
 	mappadd(x, y, color,MAP);
-																			//×¢ÊÍÖÐÎªÌØÐ§¶þ
+																			//æ³¨é‡Šä¸­ä¸ºç‰¹æ•ˆäºŒ
 	/*POINT2 X;
 	X.INIT(x, y);
 	X.WIN2MAP(X);
@@ -126,10 +126,10 @@ void printcircle(int x, int y, int color,int MAP[SIZE][SIZE])				//»æÖÆÆå×Ó
 
 	for (int i = 0; i < BBLACK; i++)
 	{
-	POINT points1[4] = { { ZS.x,ZS.y },{ ZZS.x,ZZS.y },{ ZZX.x,ZZX.y },{ ZX.x,ZX.y }};			//¶¨Òåµã
-	POINT points2[4] = { { YS.x,YS.y },{ ZYS.x,ZYS.y },{ ZYX.x,ZYX.y },{ YX.x,YX.y }};			//¶¨Ò»µã
-	setfillcolor(LIGHTRED);																		//·­×ª±³¾°ÑÕÉ«
-	putimage(ZS.x - 1, ZS.y - 1, &MAPIMAGE[X.x][X.y]);											//Ê¹ÓÃÔ­Í¼¸²¸Ç
+	POINT points1[4] = { { ZS.x,ZS.y },{ ZZS.x,ZZS.y },{ ZZX.x,ZZX.y },{ ZX.x,ZX.y }};			//å®šä¹‰ç‚¹
+	POINT points2[4] = { { YS.x,YS.y },{ ZYS.x,ZYS.y },{ ZYX.x,ZYX.y },{ YX.x,YX.y }};			//å®šä¸€ç‚¹
+	setfillcolor(LIGHTRED);																		//ç¿»è½¬èƒŒæ™¯é¢œè‰²
+	putimage(ZS.x - 1, ZS.y - 1, &MAPIMAGE[X.x][X.y]);											//ä½¿ç”¨åŽŸå›¾è¦†ç›–
 	solidpolygon(points1, 4);
 	solidpolygon(points2, 4);
 	if (ZZS.x <= x - BBLACK / 2 + 1)break;
@@ -144,7 +144,7 @@ void printcircle(int x, int y, int color,int MAP[SIZE][SIZE])				//»æÖÆÆå×Ó
 
 	Sleep(2);
 	}*/
-	setfillcolor(color ? BLACK : WHITE);					//´ÓÖÐ¼ä·Å´ó±ä»»
+	setfillcolor(color ? BLACK : WHITE);					//ä»Žä¸­é—´æ”¾å¤§å˜æ¢
 	for (int i = 0; i <= CHESSSIZE; ++i)
 	{
 		solidcircle(x, y, i);
@@ -152,29 +152,29 @@ void printcircle(int x, int y, int color,int MAP[SIZE][SIZE])				//»æÖÆÆå×Ó
 	}
 }
 
-void init()															//»æÖÆÆåÅÌ
+void init()															//ç»˜åˆ¶æ£‹ç›˜
 {
-	memset(mapp, 0, sizeof(mapp));									//³õÊ¼»¯
+	memset(mapp, 0, sizeof(mapp));									//åˆå§‹åŒ–
 	memset(expect, 0, sizeof(expect));
-	TIANEYES = false;												//¹Ø±ÕÌìÑÛÄ£Ê½
+	TIANEYES = false;												//å…³é—­å¤©çœ¼æ¨¡å¼
 	MYCOLOR = -1;
 	LASTCH.INIT(0, 0);
 
-	settextstyle(15, 0, "ËÎÌå");
-	loadimage(NULL, "1.jpg");										//±³¾°Í¼Æ¬
-	for (int x = PX; x < PX + BBLACK*(SIZE + 1); x += BBLACK)		//»æÖÆÆåÅÌ ºáÏß
+	settextstyle(15, 0, "å®‹ä½“");
+	loadimage(NULL, "1.jpg");										//èƒŒæ™¯å›¾ç‰‡
+	for (int x = PX; x < PX + BBLACK*(SIZE + 1); x += BBLACK)		//ç»˜åˆ¶æ£‹ç›˜ æ¨ªçº¿
 	{
 		if ((x / BBLACK % 2) == 0)setlinecolor(BLACK);
 		else setlinecolor(RED);
 		line(x, PY, x, PY + BBLACK*SIZE);
 	}
-	for (int y = PY; y <PY + BBLACK*(SIZE + 1); y += BBLACK)		//»æÖÆÆåÅÌ ÊúÏß
+	for (int y = PY; y <PY + BBLACK*(SIZE + 1); y += BBLACK)		//ç»˜åˆ¶æ£‹ç›˜ ç«–çº¿
 	{
 		if (y / BBLACK % 2 == 0)setlinecolor(BLACK);
 		else setlinecolor(RED);
 		line(PX, y, PX + BBLACK*SIZE, y);
 	}
-	for (int i = PX; i <= PX + BBLACK*SIZE; i += BBLACK)			//»ñÈ¡Ã¿²¿·ÖÍ¼Æ¬±£´æÔÚÍ¼Æ¬Ö¸ÕëÖÐ
+	for (int i = PX; i <= PX + BBLACK*SIZE; i += BBLACK)			//èŽ·å–æ¯éƒ¨åˆ†å›¾ç‰‡ä¿å­˜åœ¨å›¾ç‰‡æŒ‡é’ˆä¸­
 	{
 		for (int j = PY; j <= PY + BBLACK*SIZE; j += BBLACK)
 		{
@@ -185,34 +185,34 @@ void init()															//»æÖÆÆåÅÌ
 		}
 	}
 
-	printcircle(PX + (SIZE / 2 - 1)* BBLACK + BBLACK / 2, PY + (SIZE / 2 - 1) * BBLACK + BBLACK / 2, white,mapp);		//³õÊ¼µÄËÄÃ¶Æå×Ó
+	printcircle(PX + (SIZE / 2 - 1)* BBLACK + BBLACK / 2, PY + (SIZE / 2 - 1) * BBLACK + BBLACK / 2, white,mapp);		//åˆå§‹çš„å››æžšæ£‹å­
 	printcircle(PX + (SIZE / 2 - 1) * BBLACK + BBLACK / 2, PY + (SIZE / 2) * BBLACK + BBLACK / 2, black, mapp);
 	printcircle(PX + (SIZE / 2) * BBLACK + BBLACK / 2, PY + (SIZE / 2) * BBLACK + BBLACK / 2, white, mapp);
 	printcircle(PX + (SIZE / 2) * BBLACK + BBLACK / 2, PY + (SIZE / 2 - 1) * BBLACK + BBLACK / 2, black, mapp);
 
 
-	getimage(COUNT, WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, 230, 40);											//³É¼¨ËùÔÚÇøÓò±³¾°Í¼Æ¬Ö¸Õë
+	getimage(COUNT, WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, 230, 40);											//æˆç»©æ‰€åœ¨åŒºåŸŸèƒŒæ™¯å›¾ç‰‡æŒ‡é’ˆ
 	getimage(COUNT + 1, WINDOWS_X - WINDOWS_X / 5, WINDOWS_Y - WINDOWS_Y / 6, 230, 40);
 
 	LOGFONT f;
-	gettextstyle(&f);												// »ñÈ¡×ÖÌåÑùÊ½
-	f.lfHeight = 35;												// ÉèÖÃ×ÖÌå¸ß¶È
-	strcpy_s(f.lfFaceName, _T("·½ÕýÒ¦Ìå"));							// ÉèÖÃ×ÖÌå
-	f.lfQuality = ANTIALIASED_QUALITY;								// ÉèÖÃÊä³öÐ§¹ûÎª¿¹¾â³Ý  
-	settextstyle(&f);												// ÉèÖÃ×ÖÌåÑùÊ½
+	gettextstyle(&f);												// èŽ·å–å­—ä½“æ ·å¼
+	f.lfHeight = 35;												// è®¾ç½®å­—ä½“é«˜åº¦
+	strcpy_s(f.lfFaceName, _T("æ–¹æ­£å§šä½“"));							// è®¾ç½®å­—ä½“
+	f.lfQuality = ANTIALIASED_QUALITY;								// è®¾ç½®è¾“å‡ºæ•ˆæžœä¸ºæŠ—é”¯é½¿
+	settextstyle(&f);												// è®¾ç½®å­—ä½“æ ·å¼
 
 	settextcolor(WHITE);
-	outtextxy(BBLACK / 4, BBLACK / 2, "ÄãËùÖ´×Ó");
-	outtextxy(BBLACK / 4, BBLACK / 4 + BBLACK, "µ±Ç°Ö´×Ó");
+	outtextxy(BBLACK / 4, BBLACK / 2, "ä½ æ‰€æ‰§å­");
+	outtextxy(BBLACK / 4, BBLACK / 4 + BBLACK, "å½“å‰æ‰§å­");
 }
 
-int Judge(int x, int y, int color,int MAP[SIZE][SIZE])									//Ô¤ÅÐµ±Ç°Î»ÖÃÄÜ·ñÏÂ×Ó
+int Judge(int x, int y, int color,int MAP[SIZE][SIZE])									//é¢„åˆ¤å½“å‰ä½ç½®èƒ½å¦ä¸‹å­
 {
-	if (MAP[x][y])return 0;																//Èç¹ûµ±Ç°Î»ÖÃÒÑ¾­ÓÐÆå×Ó
-	int me = color ? 1 : -1;															//×¼±¸ÂäÆåÆå×ÓÑÕÉ«
+	if (MAP[x][y])return 0;																//å¦‚æžœå½“å‰ä½ç½®å·²ç»æœ‰æ£‹å­
+	int me = color ? 1 : -1;															//å‡†å¤‡è½æ£‹æ£‹å­é¢œè‰²
 	POINT2 star;
-	int count = 0, flag;																//countÎª¸ÃÎ»ÖÃ¿ÉÒÔ×ª»»¶ÔÊÖÆå×Ó¸öÊý
-	for (int i = 0; i < SIZE; ++i)														//ËÑË÷
+	int count = 0, flag;																//countä¸ºè¯¥ä½ç½®å¯ä»¥è½¬æ¢å¯¹æ‰‹æ£‹å­ä¸ªæ•°
+	for (int i = 0; i < SIZE; ++i)														//æœç´¢
 	{
 		flag = 0;
 		star.INIT(x + MOVE[i][0], y + MOVE[i][1]);
@@ -227,15 +227,15 @@ int Judge(int x, int y, int color,int MAP[SIZE][SIZE])									//Ô¤ÅÐµ±Ç°Î»ÖÃÄÜ·
 			star.ADD(MOVE[i][0], MOVE[i][1]);
 		}
 	}
-	return count;																		//·µ»Ø¸Ãµã×ª»»¶Ô·½Æå×Ó¸öÊý
+	return count;																		//è¿”å›žè¯¥ç‚¹è½¬æ¢å¯¹æ–¹æ£‹å­ä¸ªæ•°
 }
 
-void Change(POINT2 NOW,int MAP[SIZE][SIZE],bool F)												//Âä×Óºó¸Ä±äÆåÅÌ×´Ì¬ FÎªÊÇ·ñÊä³öµ½ÆÁÄ»
+void Change(POINT2 NOW,int MAP[SIZE][SIZE],bool F)												//è½å­åŽæ”¹å˜æ£‹ç›˜çŠ¶æ€ Fä¸ºæ˜¯å¦è¾“å‡ºåˆ°å±å¹•
 {
-	int me = MAP[NOW.x][NOW.y];																	//µ±Ç°Âä×ÓÆå×ÓÑÕÉ«
+	int me = MAP[NOW.x][NOW.y];																	//å½“å‰è½å­æ£‹å­é¢œè‰²
 	bool flag;
 	POINT2 a, b;
-	for (int i = 0; i<SIZE; ++i)																//ËÑË÷
+	for (int i = 0; i<SIZE; ++i)																//æœç´¢
 	{
 		flag = false;
 		a.INIT(NOW.x + MOVE[i][0], NOW.y + MOVE[i][1]);
@@ -250,8 +250,8 @@ void Change(POINT2 NOW,int MAP[SIZE][SIZE],bool F)												//Âä×Óºó¸Ä±äÆåÅÌ×´
 					b.INIT(NOW.x + MOVE[i][0], NOW.y + MOVE[i][1]);
 					while (((NOW.x <= b.x && b.x <= a.x) || (a.x <= b.x && b.x <= NOW.x)) && ((NOW.y <= b.y && b.y <= a.y) || (a.y <= b.y && b.y <= NOW.y)))
 					{
-						if(F)printcircle(b.MAP2WINX(), b.MAP2WINY(), (me == 1) ? black : white,MAP);	//¸Ä±äÆå×Ó
-						if (!F)mappadd(b.MAP2WINX(), b.MAP2WINY(), (me == 1) ? black : white, MAP);		//Èç¹û²»Êä³öµ½ÆÁÄ»£¬¸Ä±äµØÍ¼Êý×é
+						if(F)printcircle(b.MAP2WINX(), b.MAP2WINY(), (me == 1) ? black : white,MAP);	//æ”¹å˜æ£‹å­
+						if (!F)mappadd(b.MAP2WINX(), b.MAP2WINY(), (me == 1) ? black : white, MAP);		//å¦‚æžœä¸è¾“å‡ºåˆ°å±å¹•ï¼Œæ”¹å˜åœ°å›¾æ•°ç»„
 						b.ADD(MOVE[i][0], MOVE[i][1]);
 					}
 				}
@@ -262,13 +262,13 @@ void Change(POINT2 NOW,int MAP[SIZE][SIZE],bool F)												//Âä×Óºó¸Ä±äÆåÅÌ×´
 	}
 }
 
-int Statistics(int color)														//Ô¤ÅÐÃ¿¸öÎ»ÖÃ¿ÉÒÔ×ª»¯¶ÔÊÖÆå×Ó¸öÊý
+int Statistics(int color)														//é¢„åˆ¤æ¯ä¸ªä½ç½®å¯ä»¥è½¬åŒ–å¯¹æ‰‹æ£‹å­ä¸ªæ•°
 {
-	int NOWEXPECT = 0;															//×ÜµÄ×ª»¯Æå×Ó¸öÊý
-	for (int i = 0; i < SIZE; ++i)												//±éÀú
+	int NOWEXPECT = 0;															//æ€»çš„è½¬åŒ–æ£‹å­ä¸ªæ•°
+	for (int i = 0; i < SIZE; ++i)												//éåŽ†
 		for (int j = 0; j < SIZE; ++j)
 		{
-			expect[i][j] = Judge(i, j, color,mapp);									//´æ´¢¸ÃÎ»ÖÃ¿ÉÒÔ×ª»¯Æå×Ó¸öÊý
+			expect[i][j] = Judge(i, j, color,mapp);									//å­˜å‚¨è¯¥ä½ç½®å¯ä»¥è½¬åŒ–æ£‹å­ä¸ªæ•°
 			if (expect[i][j])
 			{
 				++NOWEXPECT;
@@ -279,10 +279,10 @@ int Statistics(int color)														//Ô¤ÅÐÃ¿¸öÎ»ÖÃ¿ÉÒÔ×ª»¯¶ÔÊÖÆå×Ó¸öÊý
 				circle(a.MAP2WINX(), a.MAP2WINY(), CHESSSIZE / 4);
 				circle(a.MAP2WINX(), a.MAP2WINY(), CHESSSIZE / 4 - 1);
 
-				if (TIANEYES)														//Èç¹û¿ªÆôÌìÑÛÄ£Ê½
+				if (TIANEYES)														//å¦‚æžœå¼€å¯å¤©çœ¼æ¨¡å¼
 				{
-					settextstyle(15, 0, "ËÎÌå");
-					TCHAR s[20];													//ÌìÑÛÄ£Ê½
+					settextstyle(15, 0, "å®‹ä½“");
+					TCHAR s[20];													//å¤©çœ¼æ¨¡å¼
 					_stprintf_s(s, _T("%d"), expect[i][j]);
 					outtextxy(a.MAP2WINX(), a.MAP2WINY() + 10, s);
 				}
@@ -291,50 +291,50 @@ int Statistics(int color)														//Ô¤ÅÐÃ¿¸öÎ»ÖÃ¿ÉÒÔ×ª»¯¶ÔÊÖÆå×Ó¸öÊý
 	return NOWEXPECT;
 }
 
-void CleanStatistics()										//Çå³ýÆÚÍûµãÌáÊ¾
+void CleanStatistics()										//æ¸…é™¤æœŸæœ›ç‚¹æç¤º
 {
 	for (int i = 0; i < SIZE; ++i)
 	{
 		for (int j = 0; j < SIZE; ++j)
 		{
-			if (expect[i][j] && !mapp[i][j])				//Èç¹ûµ±Ç°µãÃ»ÓÐÆå×Ó»òÕßÓÐÆÚÍû
+			if (expect[i][j] && !mapp[i][j])				//å¦‚æžœå½“å‰ç‚¹æ²¡æœ‰æ£‹å­æˆ–è€…æœ‰æœŸæœ›
 			{
 				POINT2 a;
-				a.INIT(i, j);								//¼ÇÂ¼×ø±ê
-				putimage(a.MAP2WINX() - BBLACK / 2, a.MAP2WINY() - BBLACK / 2, &MAPIMAGE[i][j]);	//Êä³ö¾Ö²¿±³¾°
+				a.INIT(i, j);								//è®°å½•åæ ‡
+				putimage(a.MAP2WINX() - BBLACK / 2, a.MAP2WINY() - BBLACK / 2, &MAPIMAGE[i][j]);	//è¾“å‡ºå±€éƒ¨èƒŒæ™¯
 			}
 		}
 	}
 }
 
-string INTTOCHI(int num, int color)											//µ±Ç°¾ÖÊÆ³É¼¨Êä³öºº×Ö
+string INTTOCHI(int num, int color)											//å½“å‰å±€åŠ¿æˆç»©è¾“å‡ºæ±‰å­—
 {
-	string number[10] = { "","Ò»","¶þ","Èý","ËÄ","Îå","Áù","Æß","°Ë","¾Å" };
+	string number[10] = { "","ä¸€","äºŒ","ä¸‰","å››","äº”","å…­","ä¸ƒ","å…«","ä¹" };
 	string data = "";
 	if (num >= 10)
 	{
 		data += number[num / 10 % 10];
-		data += "Ê®";
+		data += "å";
 	}
 	data += number[num % 10];
-	return (color ? "ºÚÆå£º" : "°×Æå£º") + data;							//num>=0&&num<=64
+	return (color ? "é»‘æ£‹ï¼š" : "ç™½æ£‹ï¼š") + data;							//num>=0&&num<=64
 }
 
-void Printcount(int balckcount, int whitecount, int nowcolor)		//Êä³öµ±Ç°·ÖÊý
+void Printcount(int balckcount, int whitecount, int nowcolor)		//è¾“å‡ºå½“å‰åˆ†æ•°
 {
-	settextcolor(DARKGRAY);											//¸ü¸Ä×ÖÌåÑÕÉ«
-	settextstyle(35, 0, "·½ÕýÒ¦Ìå");
+	settextcolor(DARKGRAY);											//æ›´æ”¹å­—ä½“é¢œè‰²
+	settextstyle(35, 0, "æ–¹æ­£å§šä½“");
 
-	putimage(WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, COUNT);		//²Á³öÔ­À´ºÛ¼£
+	putimage(WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, COUNT);		//æ“¦å‡ºåŽŸæ¥ç—•è¿¹
 	putimage(WINDOWS_X - WINDOWS_X / 5, WINDOWS_Y - WINDOWS_Y / 6, COUNT + 1);
 
-	outtextxy(WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, INTTOCHI(whitecount, white).data());	//Êä³öµ±Ç°³É¼¨
+	outtextxy(WINDOWS_X / 30, WINDOWS_Y - WINDOWS_Y / 6, INTTOCHI(whitecount, white).data());	//è¾“å‡ºå½“å‰æˆç»©
 	outtextxy(WINDOWS_X - WINDOWS_X / 5, WINDOWS_Y - WINDOWS_Y / 6, INTTOCHI(balckcount, black).data());
 
-	setfillcolor(MYCOLOR == 1 ? BLACK : MYCOLOR == 0 ? WHITE : LIGHTCYAN);						//´ÓÖÐ¼ä·Å´ó±ä»»
+	setfillcolor(MYCOLOR == 1 ? BLACK : MYCOLOR == 0 ? WHITE : LIGHTCYAN);						//ä»Žä¸­é—´æ”¾å¤§å˜æ¢
 	solidcircle(BBLACK * 2 + 10, BBLACK * 3 / 4, CHESSSIZE * 3 / 4);
 	setfillcolor((!nowcolor || balckcount + whitecount == 4) ? BLACK : WHITE);
-	NOWCOLOR = (!nowcolor || balckcount + whitecount == 4) ? black : white;						//¼ÇÂ¼µ±Ç°Ö´×Ó
+	NOWCOLOR = (!nowcolor || balckcount + whitecount == 4) ? black : white;						//è®°å½•å½“å‰æ‰§å­
 	for (int i = 0; i <= CHESSSIZE * 3 / 4; ++i)
 	{
 		solidcircle(BBLACK * 2 + 10, BBLACK * 3 / 2, i);
@@ -342,20 +342,20 @@ void Printcount(int balckcount, int whitecount, int nowcolor)		//Êä³öµ±Ç°·ÖÊý
 	}
 }
 
-void WIN(int YOURCOLOR, int balckcount, int whitecount)			//ÅÐ¶ÏÊäÓ®
+void WIN(int YOURCOLOR, int balckcount, int whitecount)			//åˆ¤æ–­è¾“èµ¢
 {
-	HWND wnd = GetHWnd();										//»ñÈ¡´°¿Ú¾ä±ú
+	HWND wnd = GetHWnd();										//èŽ·å–çª—å£å¥æŸ„
 	if (balckcount>whitecount)
 	{
-		MessageBox(wnd, YOURCOLOR == black ? "¹§Ï²Äã£¬Ê¤ÀûÀ²~" : YOURCOLOR == white ? "ÊäÁË°¥~£¬²»¹ý±ð»ÒÐÄ£¬ÏÂ´ÎÒ»¶¨¿ÉÒÔÓ®µÄ£¡" : "ºÚ·½µÃÊ¤~", "Result", MB_OK);
+		MessageBox(wnd, YOURCOLOR == black ? "æ­å–œä½ ï¼Œèƒœåˆ©å•¦~" : YOURCOLOR == white ? "è¾“äº†å“Ž~ï¼Œä¸è¿‡åˆ«ç°å¿ƒï¼Œä¸‹æ¬¡ä¸€å®šå¯ä»¥èµ¢çš„ï¼" : "é»‘æ–¹å¾—èƒœ~", "Result", MB_OK);
 	}
 	else if (balckcount<whitecount)
 	{
-		MessageBox(wnd, YOURCOLOR == white ? "¹§Ï²Äã£¬Ê¤ÀûÀ²~" : YOURCOLOR == black ? "ÊäÁË°¥~£¬²»¹ý±ð»ÒÐÄ£¬ÏÂ´ÎÒ»¶¨¿ÉÒÔÓ®µÄ£¡" : "°×·½µÃÊ¤", "Result", MB_OK);
+		MessageBox(wnd, YOURCOLOR == white ? "æ­å–œä½ ï¼Œèƒœåˆ©å•¦~" : YOURCOLOR == black ? "è¾“äº†å“Ž~ï¼Œä¸è¿‡åˆ«ç°å¿ƒï¼Œä¸‹æ¬¡ä¸€å®šå¯ä»¥èµ¢çš„ï¼" : "ç™½æ–¹å¾—èƒœ", "Result", MB_OK);
 	}
 	else
 	{
-		MessageBox(wnd, "àæ~Æ½¾Ö°¥£¬Òª²»ÒªÔÙÀ´Ò»´ÎÄØ£¡", "Result", MB_OK);
+		MessageBox(wnd, "å™«~å¹³å±€å“Žï¼Œè¦ä¸è¦å†æ¥ä¸€æ¬¡å‘¢ï¼", "Result", MB_OK);
 	}
 }
 
@@ -363,58 +363,58 @@ void HL(int NOWWJ)
 {
 	if (NOWWJ != -1)
 	{
-		HWND wnd = GetHWnd();										//»ñÈ¡´°¿Ú¾ä±ú
-		MessageBox(wnd, NOWWJ == MYCOLOR ? "ÄãÃ»ÓÐ¿ÉÒÔÏÂµÄ×Ó£¡" : "¶Ô·½ÒÑÎÞ×Ó¿ÉÏÂ£¡", "»ØºÏÌø¹ý", MB_OK);
+		HWND wnd = GetHWnd();										//èŽ·å–çª—å£å¥æŸ„
+		MessageBox(wnd, NOWWJ == MYCOLOR ? "ä½ æ²¡æœ‰å¯ä»¥ä¸‹çš„å­ï¼" : "å¯¹æ–¹å·²æ— å­å¯ä¸‹ï¼", "å›žåˆè·³è¿‡", MB_OK);
 	}
 }
 
-POINT2 Easy()										//ÈË»ú¶ÔÕ½¼òµ¥AI
+POINT2 Easy()										//äººæœºå¯¹æˆ˜ç®€å•AI
 {
-	POINT2 MAX;										//¶¨ÒåÒÔ¼°³õÊ¼»¯×îÓÅ½â
+	POINT2 MAX;										//å®šä¹‰ä»¥åŠåˆå§‹åŒ–æœ€ä¼˜è§£
 	MAX.INIT(0, 0);
 	int maxx = 0;
 	for (int i = 0; i < SIZE; ++i)
 		for (int j = 0; j < SIZE; ++j)
 		{
-			if (expect[i][j] >= maxx)				//Ñ°ÕÒ¿ÉÒÔ×ª»¯Æå×Ó×î¶àµÄµã×÷Îª×îÓÅ½â
+			if (expect[i][j] >= maxx)				//å¯»æ‰¾å¯ä»¥è½¬åŒ–æ£‹å­æœ€å¤šçš„ç‚¹ä½œä¸ºæœ€ä¼˜è§£
 			{
 				maxx = expect[i][j];
 				MAX.INIT(i, j);
 			}
 		}
 	if (ESCEXIT)gameStart();
-	Sleep(800);										//¼äÐª
-	return MAX;										//·µ»Ø×îÓÅ½â
+	Sleep(800);										//é—´æ­‡
+	return MAX;										//è¿”å›žæœ€ä¼˜è§£
 }
 
-void copymap(int one[SIZE][SIZE], int last[SIZE][SIZE])						//¿½±´µØÍ¼
+void copymap(int one[SIZE][SIZE], int last[SIZE][SIZE])						//æ‹·è´åœ°å›¾
 {
 	for (int i = 0; i < SIZE; i++)
 		for (int j = 0; j < SIZE; j++)
 			one[i][j] = last[i][j];
 }
 
-POINT2 Middle()										//ÈË»ú¶ÔÕ½ÖÐµÈAI
+POINT2 Middle()										//äººæœºå¯¹æˆ˜ä¸­ç­‰AI
 {
-	int ME = 0;										//AIÈ¨Öµ
+	int ME = 0;										//AIæƒå€¼
 	int maxx = 0;
 
 	struct _ADD
 	{
-		int x;										//X×ø±ê
-		int y;										//Y×ø±ê
-		int w;										//È¨Öµ
+		int x;										//Xåæ ‡
+		int y;										//Yåæ ‡
+		int w;										//æƒå€¼
 		void init(int x, int y, int w)
 		{
 			this->x = x;
 			this->y = y;
 			this->w = w;
 		}
-		bool operator < (_ADD a)					//ÖØÔØ±È½ÏÔËËã·û
+		bool operator < (_ADD a)					//é‡è½½æ¯”è¾ƒè¿ç®—ç¬¦
 		{
 			return w>a.w;
 		}
-		POINT2 INTOPOINT2()							//×ª»»ÎªPOINT2ÀàÐÍ
+		POINT2 INTOPOINT2()							//è½¬æ¢ä¸ºPOINT2ç±»åž‹
 		{
 			POINT2 data;
 			data.INIT(x, y);
@@ -422,92 +422,92 @@ POINT2 Middle()										//ÈË»ú¶ÔÕ½ÖÐµÈAI
 		}
 	}WEA[SIZE*SIZE];
 
-	int expectnow[SIZE][SIZE],mapnow[SIZE][SIZE];	
-	if (ESCEXIT)gameStart();												//°´ESCÍË³ö
-	Sleep(800);																//¼äÐª0.8S
-	
+	int expectnow[SIZE][SIZE],mapnow[SIZE][SIZE];
+	if (ESCEXIT)gameStart();												//æŒ‰ESCé€€å‡º
+	Sleep(800);																//é—´æ­‡0.8S
+
 	for (int i = 0; i < SIZE; ++i)
 		for (int j = 0; j < SIZE; ++j)
 		{
-			if (expect[i][j])												//Èç¹ûµ±Ç°µã¿ÉÒÔ×ßÆå
+			if (expect[i][j])												//å¦‚æžœå½“å‰ç‚¹å¯ä»¥èµ°æ£‹
 			{
-				ME = MAPPOINTCOUNT[i][j]+expect[i][j];						//¼ÆËã±¾·½ÔÚ¸ÃµãÈ¨Öµ
+				ME = MAPPOINTCOUNT[i][j]+expect[i][j];						//è®¡ç®—æœ¬æ–¹åœ¨è¯¥ç‚¹æƒå€¼
 				copymap(mapnow, mapp);
-				mapnow[i][j] = NOWCOLOR ? 1 : -1;							//Ä£Äâ×ßÆå
+				mapnow[i][j] = NOWCOLOR ? 1 : -1;							//æ¨¡æ‹Ÿèµ°æ£‹
 				POINT2 NOWPOINT;
 				NOWPOINT.INIT(i, j);
 				if ((i == 0 && j == 0 )||( i == 0 && j == SIZE - 1) ||( i == SIZE - 1 && j == SIZE - 1) ||( i == SIZE - 1 && j == 0))
 				{
-					return NOWPOINT;										//Èç¹ûÔÚ½Ç£¬·µ»Ø½Ç×ø±ê
+					return NOWPOINT;										//å¦‚æžœåœ¨è§’ï¼Œè¿”å›žè§’åæ ‡
 				}
 
-				Change(NOWPOINT, mapnow,false);								//Ä£Äâ×ßÆåºóÐéÄâ¸Ä±äµØÍ¼
-				int YOU = -1050;											//Ì½Öª¶ÔÊÖÐÐ¶¯Á¦Óë¾ÖÊÆ
+				Change(NOWPOINT, mapnow,false);								//æ¨¡æ‹Ÿèµ°æ£‹åŽè™šæ‹Ÿæ”¹å˜åœ°å›¾
+				int YOU = -1050;											//æŽ¢çŸ¥å¯¹æ‰‹è¡ŒåŠ¨åŠ›ä¸Žå±€åŠ¿
 				for (int k = 0; k < SIZE; ++k)
 					for (int l = 0; l < SIZE; ++l)
 					{
-						expectnow[k][l] = Judge(k, l, !NOWCOLOR, mapnow);	//ÅÐ¶Ï¶ÔÊÖÆÚÍû
+						expectnow[k][l] = Judge(k, l, !NOWCOLOR, mapnow);	//åˆ¤æ–­å¯¹æ‰‹æœŸæœ›
 						if (expectnow[k][l])
 						{
 							YOU = YOU < MAPPOINTCOUNT[k][l] + expectnow[k][l] ? MAPPOINTCOUNT[k][l] + expectnow[k][l] : YOU;
 						}
 					}
-				WEA[maxx++].init(i, j, ME - YOU);							//Èë½á¹¹ÌåÊý×é
+				WEA[maxx++].init(i, j, ME - YOU);							//å…¥ç»“æž„ä½“æ•°ç»„
 			}
 		}
-	sort(WEA, WEA + maxx);													//°´ÕÕÈ¨ÖµÅÅÐò
+	sort(WEA, WEA + maxx);													//æŒ‰ç…§æƒå€¼æŽ’åº
 	for (int i = 0; i < maxx; ++i)
 	{
 		if ((WEA[i].x < 2 && WEA[i].y < 2) || (WEA[i].x < 2 && SIZE - WEA[i].y - 1 < 2) || (SIZE - 1 - WEA[i].x < 2 && WEA[i].y < 2) || (SIZE - 1 - WEA[i].x < 2 && SIZE - 1 - WEA[i].y < 2))continue;
-		return WEA[i].INTOPOINT2();											//·µ»Ø·Ç½Ç±ß×îÓÅ½â
+		return WEA[i].INTOPOINT2();											//è¿”å›žéžè§’è¾¹æœ€ä¼˜è§£
 	}
-	return WEA[0].INTOPOINT2();												//·µ»Ø½Ç±ß×îÓÅ½â
+	return WEA[0].INTOPOINT2();												//è¿”å›žè§’è¾¹æœ€ä¼˜è§£
 }
 
 
-int difai(int x,int y,int mapnow[SIZE][SIZE],int expectnow[SIZE][SIZE],int depin,int depinmax)						//¼«´ó¼«Ð¡ËÑË÷
+int difai(int x,int y,int mapnow[SIZE][SIZE],int expectnow[SIZE][SIZE],int depin,int depinmax)						//æžå¤§æžå°æœç´¢
 {
-	if (depin >= depinmax)return 0;											//µÝ¹é³ö¿Ú
+	if (depin >= depinmax)return 0;											//é€’å½’å‡ºå£
 
-	int maxx = -10005;														//×î´óÈ¨Öµ
+	int maxx = -10005;														//æœ€å¤§æƒå€¼
 	POINT2 NOW;
-	int expectnow2[SIZE][SIZE] , mapnow2[SIZE][SIZE],mapnext[SIZE][SIZE],expectlast[SIZE][SIZE];					//¶¨ÒåÁÙÊ±Êý×é
+	int expectnow2[SIZE][SIZE] , mapnow2[SIZE][SIZE],mapnext[SIZE][SIZE],expectlast[SIZE][SIZE];					//å®šä¹‰ä¸´æ—¶æ•°ç»„
 
-	copymap(mapnow2, mapnow);												//¸´ÖÆµ±Ç°ÆåÅÌ
+	copymap(mapnow2, mapnow);												//å¤åˆ¶å½“å‰æ£‹ç›˜
 
-	mapnow2[x][y] = NOWCOLOR ? 1 : -1;										//Ä£ÄâÔÚµ±Ç°ÆåÅÌÉÏÏÂÆå
-	int ME = MAPPOINTCOUNT[x][y] + expectnow[x][y];							//µ±Ç°Æå×ÓÈ¨
+	mapnow2[x][y] = NOWCOLOR ? 1 : -1;										//æ¨¡æ‹Ÿåœ¨å½“å‰æ£‹ç›˜ä¸Šä¸‹æ£‹
+	int ME = MAPPOINTCOUNT[x][y] + expectnow[x][y];							//å½“å‰æ£‹å­æƒ
 	NOW.INIT(x,y);
 
-	Change(NOW, mapnow2, false);											//¸Ä±äÆåÅÌAI½áÊø
+	Change(NOW, mapnow2, false);											//æ”¹å˜æ£‹ç›˜AIç»“æŸ
 
 	int MAXEXPECT = 0, LINEEXPECT = 0, COUNT = 0;
 	for (int i = 0; i < SIZE; ++i)
 		for (int j = 0; j < SIZE; ++j)
 		{
-			expectnow2[i][j] = Judge(i, j, !NOWCOLOR, mapnow2);				//Ô¤ÅÐ¶Ô·½ÊÇ·ñ¿ÉÒÔ×ßÆå
+			expectnow2[i][j] = Judge(i, j, !NOWCOLOR, mapnow2);				//é¢„åˆ¤å¯¹æ–¹æ˜¯å¦å¯ä»¥èµ°æ£‹
 			if (expectnow2[i][j])
 			{
 				++MAXEXPECT;
-				if ((i == 0 && j == 0) || (i == 0 && j == SIZE - 1) || (i == SIZE - 1 && j == SIZE - 1) || (i == SIZE - 1 && j == 0))return -1800;	//Èç¹û¶Ô·½ÓÐÕ¼½ÇµÄ¿ÉÄÜ
+				if ((i == 0 && j == 0) || (i == 0 && j == SIZE - 1) || (i == SIZE - 1 && j == SIZE - 1) || (i == SIZE - 1 && j == 0))return -1800;	//å¦‚æžœå¯¹æ–¹æœ‰å è§’çš„å¯èƒ½
 				if ((i < 2 && j < 2) || (i < 2 && SIZE - j - 1 < 2) || (SIZE - 1 - i < 2 && j < 2) || (SIZE - 1 - i < 2 && SIZE - 1 - j < 2))++LINEEXPECT;
 			}
 		}
-	if (LINEEXPECT * 10 > MAXEXPECT * 7)return 1400;						//Èç¹û¶Ô·½×ßµ½»µµã×´Ì¬½Ï¶à ¼ôÖ¦
+	if (LINEEXPECT * 10 > MAXEXPECT * 7)return 1400;						//å¦‚æžœå¯¹æ–¹èµ°åˆ°åç‚¹çŠ¶æ€è¾ƒå¤š å‰ªæž
 
 	for (int i = 0; i < SIZE; i++)
 		for (int j = 0; j < SIZE; j++)
-			if (expectnow2[i][j])											//Èç¹û¶Ô·½¿ÉÒÔ×ßÆå
+			if (expectnow2[i][j])											//å¦‚æžœå¯¹æ–¹å¯ä»¥èµ°æ£‹
 			{
-				int YOU = MAPPOINTCOUNT[i][j] + expectnow2[i][j];			//µ±Ç°È¨Öµ
-				copymap(mapnext, mapnow2);									//¿½±´µØÍ¼
-				mapnext[i][j] = (!NOWCOLOR) ? 1 : -1;						//Ä£Äâ¶Ô·½×ßÆå
+				int YOU = MAPPOINTCOUNT[i][j] + expectnow2[i][j];			//å½“å‰æƒå€¼
+				copymap(mapnext, mapnow2);									//æ‹·è´åœ°å›¾
+				mapnext[i][j] = (!NOWCOLOR) ? 1 : -1;						//æ¨¡æ‹Ÿå¯¹æ–¹èµ°æ£‹
 				NOW.INIT(i, j);
-				Change(NOW, mapnext, false);								//¸Ä±äÆåÅÌ
+				Change(NOW, mapnext, false);								//æ”¹å˜æ£‹ç›˜
 
 				for (int k = 0; k < SIZE; k++)
 					for (int l = 0; l < SIZE; l++)
-						expectlast[k][l] = Judge(k, l, NOWCOLOR, mapnext);	//Ñ°ÕÒAI¿ÉÐÐµã
+						expectlast[k][l] = Judge(k, l, NOWCOLOR, mapnext);	//å¯»æ‰¾AIå¯è¡Œç‚¹
 
 				for (int k = 0; k < SIZE; k++)
 					for (int l = 0; l < SIZE;l++)
@@ -521,7 +521,7 @@ int difai(int x,int y,int mapnow[SIZE][SIZE],int expectnow[SIZE][SIZE],int depin
 }
 
 /*
-POINT2 MIDDLE()									//ÈË»ú¶ÔÕ½ÖÐµÈAI
+POINT2 MIDDLE()									//äººæœºå¯¹æˆ˜ä¸­ç­‰AI
 {
 	POINT2 MAX;
 	int maxx = -10005;
@@ -534,9 +534,9 @@ POINT2 MIDDLE()									//ÈË»ú¶ÔÕ½ÖÐµÈAI
 				if ((i == 0 && j == 0) || (i == 0 && j == SIZE - 1) || (i == SIZE - 1 && j == SIZE - 1) || (i == SIZE - 1 && j == 0))
 				{
 					MAX.INIT(i, j);
-					return MAX;										//Èç¹ûÔÚ½Ç£¬·µ»Ø½Ç×ø±ê
+					return MAX;										//å¦‚æžœåœ¨è§’ï¼Œè¿”å›žè§’åæ ‡
 				}
-				int k = difai(i, j, mapp, expect, 0, 1);					//µÝ¹éËÑË÷ ËÑË÷Èý²ã
+				int k = difai(i, j, mapp, expect, 0, 1);					//é€’å½’æœç´¢ æœç´¢ä¸‰å±‚
 				if (k >= maxx)
 				{
 					maxx = k;
@@ -548,7 +548,7 @@ POINT2 MIDDLE()									//ÈË»ú¶ÔÕ½ÖÐµÈAI
 }
 */
 
-POINT2 Difficult()									//ÈË»ú¶ÔÕ½À§ÄÑAI
+POINT2 Difficult()									//äººæœºå¯¹æˆ˜å›°éš¾AI
 {
 	POINT2 MAX;
 	int maxx = -10005;
@@ -561,9 +561,9 @@ POINT2 Difficult()									//ÈË»ú¶ÔÕ½À§ÄÑAI
 				if ((i == 0 && j == 0) || (i == 0 && j == SIZE - 1) || (i == SIZE - 1 && j == SIZE - 1) || (i == SIZE - 1 && j == 0))
 				{
 					MAX.INIT(i, j);
-					return MAX;										//Èç¹ûÔÚ½Ç£¬·µ»Ø½Ç×ø±ê
+					return MAX;										//å¦‚æžœåœ¨è§’ï¼Œè¿”å›žè§’åæ ‡
 				}
-				int k = difai(i,j,mapp,expect,0,3);					//µÝ¹éËÑË÷ ËÑË÷Èý²ã
+				int k = difai(i,j,mapp,expect,0,3);					//é€’å½’æœç´¢ æœç´¢ä¸‰å±‚
 				if (k >= maxx)
 				{
 					maxx = k;
@@ -574,58 +574,58 @@ POINT2 Difficult()									//ÈË»ú¶ÔÕ½À§ÄÑAI
 	return MAX;
 }
 
-POINT2 MOUSE()										//Êó±êÊÂ¼þ
+POINT2 MOUSE()										//é¼ æ ‡äº‹ä»¶
 {
 	MOUSEMSG m;
 	while (true)
 	{
-		m = GetMouseMsg();							//»ñÈ¡Êó±êÐÅÏ¢
+		m = GetMouseMsg();							//èŽ·å–é¼ æ ‡ä¿¡æ¯
 		switch (m.uMsg)
 		{
-		case(WM_LBUTTONDOWN) :						//µ±Êó±ê×ó¼ü°´ÏÂÊ±
+		case(WM_LBUTTONDOWN) :						//å½“é¼ æ ‡å·¦é”®æŒ‰ä¸‹æ—¶
 		{
 			POINT2 NOWMOUSE;
 			NOWMOUSE.INIT(m.x, m.y);
-			if (TOINTERNET)							//Èç¹û´¦ÓÚÁªÍø¶ÔÕ½×´Ì¬ ·¢ËÍµ±Ç°Êý¾Ý
+			if (TOINTERNET)							//å¦‚æžœå¤„äºŽè”ç½‘å¯¹æˆ˜çŠ¶æ€ å‘é€å½“å‰æ•°æ®
 			{
 				char Toyou[50] = { 0 };
 				sprintf_s(Toyou, "%d,%d", m.x, m.y);
-				send(sockConn, Toyou, sizeof(Toyou) , 0);		//·¢ËÍÊý¾Ý
+				send(sockConn, Toyou, sizeof(Toyou) , 0);		//å‘é€æ•°æ®
 			}
-			return NOWMOUSE;						//·µ»ØÊó±ê×ø±ê
+			return NOWMOUSE;						//è¿”å›žé¼ æ ‡åæ ‡
 			break;
 		}
-		case(WM_MOUSEMOVE) :								//µ÷ÊÔ Êä³öÊó±êÎ»ÖÃ
+		case(WM_MOUSEMOVE) :								//è°ƒè¯• è¾“å‡ºé¼ æ ‡ä½ç½®
 		{
 			if (ESCEXIT)gameStart();
 			break;
 		}
-		case(WM_RBUTTONDOWN) :								//Èç¹ûÊó±êÓÒ¼üµãÏÂÊ±
+		case(WM_RBUTTONDOWN) :								//å¦‚æžœé¼ æ ‡å³é”®ç‚¹ä¸‹æ—¶
 		{
-			TIANEYES = !TIANEYES;							//¿ªÆôOR¹Ø±ÕÌìÑÛÄ£Ê½
+			TIANEYES = !TIANEYES;							//å¼€å¯ORå…³é—­å¤©çœ¼æ¨¡å¼
 			break;
 		}
 		}
 	}
 }
 
-bool putmouse(POINT2 &m)									//ÖØ¶¨ÏòÊó±ê×ø±ê
+bool putmouse(POINT2 &m)									//é‡å®šå‘é¼ æ ‡åæ ‡
 {
 	bool flag = true;
 	int mouseinx[SIZE + 1], mouseiny[SIZE + 1];
-	for (int i = 0; i < SIZE + 1; ++i)						//¾«È·×ø±ê´ò±í
+	for (int i = 0; i < SIZE + 1; ++i)						//ç²¾ç¡®åæ ‡æ‰“è¡¨
 	{
 		mouseinx[i] = PX + i*BBLACK;
 		mouseiny[i] = PY + i*BBLACK;
 	}
-	if (m.x < PX || m.x>PX + SIZE*BBLACK || m.y < PY || m.y>PY + SIZE*BBLACK)flag = false;	//Èç¹ûµã»÷ÔÚÆåÅÌÍâ
+	if (m.x < PX || m.x>PX + SIZE*BBLACK || m.y < PY || m.y>PY + SIZE*BBLACK)flag = false;	//å¦‚æžœç‚¹å‡»åœ¨æ£‹ç›˜å¤–
 	else
 	{
 		for (int i = 0; i<SIZE; ++i)
 		{
 			if (m.x >= mouseinx[i] && m.x <= mouseinx[i + 1])
 			{
-				if (m.x - mouseinx[i]>BBLACK / 8 && mouseinx[i + 1] - m.x>BBLACK / 8)		//ÖØ¶¨ÏòX
+				if (m.x - mouseinx[i]>BBLACK / 8 && mouseinx[i + 1] - m.x>BBLACK / 8)		//é‡å®šå‘X
 				{
 					m.x = (mouseinx[i] + mouseinx[i + 1]) / 2;
 				}
@@ -636,7 +636,7 @@ bool putmouse(POINT2 &m)									//ÖØ¶¨ÏòÊó±ê×ø±ê
 		{
 			if (m.y >= mouseiny[i] && m.y <= mouseiny[i + 1])
 			{
-				if (m.y - mouseiny[i]>BBLACK / 8 && mouseiny[i + 1] - m.y > BBLACK / 8)		//ÖØ¶¨ÏòY
+				if (m.y - mouseiny[i]>BBLACK / 8 && mouseiny[i + 1] - m.y > BBLACK / 8)		//é‡å®šå‘Y
 				{
 					m.y = (mouseiny[i] + mouseiny[i + 1]) / 2;
 				}
@@ -644,45 +644,45 @@ bool putmouse(POINT2 &m)									//ÖØ¶¨ÏòÊó±ê×ø±ê
 			}
 		}
 	}
-	return flag;											//·µ»Øµ±Ç°Î»ÖÃÄÜ·ñÂä×Ó
+	return flag;											//è¿”å›žå½“å‰ä½ç½®èƒ½å¦è½å­
 }
 
-void CleanLast(POINT2 WINDOWS2, int F)						//¼ÇÂ¼ÉÏÒ»²½×ßÆåÎ»ÖÃ
+void CleanLast(POINT2 WINDOWS2, int F)						//è®°å½•ä¸Šä¸€æ­¥èµ°æ£‹ä½ç½®
 {
-	if (LASTCH.x > SIZE&&LASTCH.y > SIZE)					//ÒÔÏÂÈ¡ÏûÉÏÒ»²½Ìî³ä
+	if (LASTCH.x > SIZE&&LASTCH.y > SIZE)					//ä»¥ä¸‹å–æ¶ˆä¸Šä¸€æ­¥å¡«å……
 	{
-		setfillcolor(getpixel(LASTCH.x, LASTCH.y));			//»ñÈ¡Ô­À´Æå×ÓÑÕÉ«
-		putimage(LASTCH.x - BBLACK / 2, LASTCH.y - BBLACK / 2, &MAPIMAGE[LASTCH.WIN2MAPX()][LASTCH.WIN2MAPY()]);		
+		setfillcolor(getpixel(LASTCH.x, LASTCH.y));			//èŽ·å–åŽŸæ¥æ£‹å­é¢œè‰²
+		putimage(LASTCH.x - BBLACK / 2, LASTCH.y - BBLACK / 2, &MAPIMAGE[LASTCH.WIN2MAPX()][LASTCH.WIN2MAPY()]);
 		solidcircle(LASTCH.x, LASTCH.y, CHESSSIZE);
 	}
 
-	setfillcolor(RGB(49, 153, 182));						//ÒÔÏÂÎªÌî³äµ±Ç°×ßÆå
+	setfillcolor(RGB(49, 153, 182));						//ä»¥ä¸‹ä¸ºå¡«å……å½“å‰èµ°æ£‹
 	LASTCH.INIT(WINDOWS2.x, WINDOWS2.y);
 
-	solidrectangle(WINDOWS2.x - BBLACK / 2 + 2, WINDOWS2.y - BBLACK / 2 + 2, WINDOWS2.x + BBLACK / 2 - 2, WINDOWS2.y + BBLACK / 2 - 2);		//±³¾°¾ØÐÎ
+	solidrectangle(WINDOWS2.x - BBLACK / 2 + 2, WINDOWS2.y - BBLACK / 2 + 2, WINDOWS2.x + BBLACK / 2 - 2, WINDOWS2.y + BBLACK / 2 - 2);		//èƒŒæ™¯çŸ©å½¢
 	setfillcolor(F ? BLACK : WHITE);
-	solidcircle(WINDOWS2.x, WINDOWS2.y, CHESSSIZE);			//»­Æå×Ó
+	solidcircle(WINDOWS2.x, WINDOWS2.y, CHESSSIZE);			//ç”»æ£‹å­
 }
 
-int Playchess(int F, POINT2 WINDOWS2, int &balckcount, int &whitecount)	//¿ªÊ¼
+int Playchess(int F, POINT2 WINDOWS2, int &balckcount, int &whitecount)	//å¼€å§‹
 {
-	//F ºÚ·½Îª1  °×·½Îª0
+	//F é»‘æ–¹ä¸º1  ç™½æ–¹ä¸º0
 	POINT2 MAP2;
 
-	if (WINDOWS2.x < SIZE&&WINDOWS2.y < SIZE)					//Èç¹û´«ÈëµÄ×ø±êÎª¾ØÕó×ø±ê
+	if (WINDOWS2.x < SIZE&&WINDOWS2.y < SIZE)					//å¦‚æžœä¼ å…¥çš„åæ ‡ä¸ºçŸ©é˜µåæ ‡
 	{
 		MAP2 = WINDOWS2;
-		WINDOWS2.MAP2WIN(WINDOWS2);								//½«Æä×ª»»³ÉÊµ¼ÊÕ¹Ê¾×ø±ê
+		WINDOWS2.MAP2WIN(WINDOWS2);								//å°†å…¶è½¬æ¢æˆå®žé™…å±•ç¤ºåæ ‡
 	}
 	else
 	{
-		if (!putmouse(WINDOWS2))return 0;						//Êó±êÊäÈë×ø±êÖØ¶¨Ïò
-		WINDOWS2.WIN2MAP(MAP2);									//´æ´¢ÖØ¶¨ÏòÖ®ºóµÄ¾ØÕó×ø±ê
+		if (!putmouse(WINDOWS2))return 0;						//é¼ æ ‡è¾“å…¥åæ ‡é‡å®šå‘
+		WINDOWS2.WIN2MAP(MAP2);									//å­˜å‚¨é‡å®šå‘ä¹‹åŽçš„çŸ©é˜µåæ ‡
 	}
-	if (expect[MAP2.x][MAP2.y])									//ÓÐÎ»ÖÃ¿ÉÐÐ
+	if (expect[MAP2.x][MAP2.y])									//æœ‰ä½ç½®å¯è¡Œ
 	{
-		CleanStatistics();										//Çå³ýÆÁÄ»ÌáÊ¾
-		if (F)													//ÅÐ¶ÏÈç¹ûÎªºÚÆåµÃ·Ö
+		CleanStatistics();										//æ¸…é™¤å±å¹•æç¤º
+		if (F)													//åˆ¤æ–­å¦‚æžœä¸ºé»‘æ£‹å¾—åˆ†
 		{
 			balckcount += expect[MAP2.x][MAP2.y] + 1;
 			whitecount -= expect[MAP2.x][MAP2.y];
@@ -693,53 +693,54 @@ int Playchess(int F, POINT2 WINDOWS2, int &balckcount, int &whitecount)	//¿ªÊ¼
 			balckcount -= expect[MAP2.x][MAP2.y];
 		}
 
-		printcircle(WINDOWS2.x, WINDOWS2.y, F,mapp);			//»­Æå×Ó mappÎªÊäÈëÊý×é
-		CleanLast(WINDOWS2, F);									//µ±Ç°×ßÆåÆå×ÓÌáÊ¾
-		Change(MAP2,mapp,true);									//·­×ªÆå×Ó trueÎªÏÔÊ¾ÔÚÆÁÄ»
-		Printcount(balckcount, whitecount, F);	//´òÓ¡·ÖÊý
+		printcircle(WINDOWS2.x, WINDOWS2.y, F,mapp);			//ç”»æ£‹å­ mappä¸ºè¾“å…¥æ•°ç»„
+		CleanLast(WINDOWS2, F);									//å½“å‰èµ°æ£‹æ£‹å­æç¤º
+		Change(MAP2,mapp,true);									//ç¿»è½¬æ£‹å­ trueä¸ºæ˜¾ç¤ºåœ¨å±å¹•
+		Printcount(balckcount, whitecount, F);	//æ‰“å°åˆ†æ•°
 
-		if (balckcount + whitecount >= SIZE*SIZE || !balckcount || !whitecount)return 3;	//Èç¹ûÊ¤¸ºÒÑ·Ö
-		if (!Statistics(!F))									//Èç¹û¶Ô·½ÎÞ·¨×ßÆå
+		if (balckcount + whitecount >= SIZE*SIZE || !balckcount || !whitecount)return 3;	//å¦‚æžœèƒœè´Ÿå·²åˆ†
+		if (!Statistics(!F))									//å¦‚æžœå¯¹æ–¹æ— æ³•èµ°æ£‹
 		{
-			if (Statistics(F))									//ÅÐ¶Ï×Ô¼ºÊÇ·ñ¿ÉÒÔ×ßÆå
+			if (Statistics(F))									//åˆ¤æ–­è‡ªå·±æ˜¯å¦å¯ä»¥èµ°æ£‹
 			{
-				HL(!F);											//×Ô¼º¿É×ßÆåÊä³ö¶Ô·½ÎÞ·¨×ßÆåÐÅÏ¢
+				HL(!F);											//è‡ªå·±å¯èµ°æ£‹è¾“å‡ºå¯¹æ–¹æ— æ³•èµ°æ£‹ä¿¡æ¯
+				Printcount(balckcount, whitecount, !F);			//å› ä¸ºå‰é¢å·²ç»æ”¹å˜äº†çŠ¶æ€ï¼Œè¿™é‡Œç”¨äºŽè¿˜åŽŸ
 				return 2;
 			}
-			else return 3;										//Ë«·½¶¼ÎÞ·¨×ßÆå
+			else return 3;										//åŒæ–¹éƒ½æ— æ³•èµ°æ£‹
 		}
 		return 1;
 	}
 	return 0;
 }
 
-void STARTVS(int YOURCOLOR, POINT2 P1(), POINT2 P2())			//¿ªÊ¼¶ÔÕ½
+void STARTVS(int YOURCOLOR, POINT2 P1(), POINT2 P2())			//å¼€å§‹å¯¹æˆ˜
 {
-	int balckcount = 2, whitecount = 2;							//³õÊ¼»¯»î×ÅµÄÆå×Ó
+	int balckcount = 2, whitecount = 2;							//åˆå§‹åŒ–æ´»ç€çš„æ£‹å­
 
 	MYCOLOR = YOURCOLOR;
 
-	Printcount(balckcount, whitecount, black);					//µ±Ç°ÐÎÊÆ
+	Printcount(balckcount, whitecount, black);					//å½“å‰å½¢åŠ¿
 	Statistics(black);
 	while (true)
 	{
-	CX1:														//±¾»ØºÏºöÂÔ
+	CX1:														//æœ¬å›žåˆå¿½ç•¥
 		int PD = Playchess(black, (*P1)(), balckcount, whitecount);
 		switch (PD)
 		{
 		case 0:
-			goto CX1;											//ÊäÈëÊ§Îó»òÎÞÊäÈë
+			goto CX1;											//è¾“å…¥å¤±è¯¯æˆ–æ— è¾“å…¥
 			break;
 		case 1:
-			break;												//Õý³£½áÊø
+			break;												//æ­£å¸¸ç»“æŸ
 		case 2:
-			goto CX1;											//ºöÂÔ¶Ô·½
+			goto CX1;											//å¿½ç•¥å¯¹æ–¹
 			break;
 		case 3:
-			goto ED;											//Æå¾Ö½áÊø
+			goto ED;											//æ£‹å±€ç»“æŸ
 			break;
 		}
-	CX2:															//±¾»ØºÏºöÂÔ
+	CX2:															//æœ¬å›žåˆå¿½ç•¥
 		PD = Playchess(!black, (*P2)(), balckcount, whitecount);
 		switch (PD)
 		{
@@ -756,7 +757,7 @@ void STARTVS(int YOURCOLOR, POINT2 P1(), POINT2 P2())			//¿ªÊ¼¶ÔÕ½
 			break;
 		}
 	}
-ED:																	//½áÊø
+ED:																	//ç»“æŸ
 	WIN(YOURCOLOR, balckcount, whitecount);
 	_getch();
 	if (TOINTERNET)
@@ -767,33 +768,33 @@ ED:																	//½áÊø
 	gameStart();
 }
 
-char *ip;												//¶¨ÒåIPµØÖ·±äÁ¿ 
-void Get_ip()											//»ñÈ¡±¾»úIPµØÖ·
+char *ip;												//å®šä¹‰IPåœ°å€å˜é‡
+void Get_ip()											//èŽ·å–æœ¬æœºIPåœ°å€
 {
 	WSADATA wsaData;
-	char name[255];										//¶¨ÒåÓÃÓÚ´æ·Å»ñµÃµÄÖ÷»úÃûµÄ±äÁ¿
-	PHOSTENT hostinfo;									//»ñµÃWinsock°æ±¾µÄÕýÈ·Öµ
-	if (WSAStartup(MAKEWORD(2, 0), &wsaData) == 0)		//ÔÚÊÇ¼ÓÔØWinsock¿â£¬Èç¹ûWSAStartup£¨£©º¯Êý·µ»ØÖµÎª0£¬ËµÃ÷¼ÓÔØ³É¹¦£¬³ÌÐò¿ÉÒÔ¼ÌÐø
+	char name[255];										//å®šä¹‰ç”¨äºŽå­˜æ”¾èŽ·å¾—çš„ä¸»æœºåçš„å˜é‡
+	PHOSTENT hostinfo;									//èŽ·å¾—Winsockç‰ˆæœ¬çš„æ­£ç¡®å€¼
+	if (WSAStartup(MAKEWORD(2, 0), &wsaData) == 0)		//åœ¨æ˜¯åŠ è½½Winsockåº“ï¼Œå¦‚æžœWSAStartupï¼ˆï¼‰å‡½æ•°è¿”å›žå€¼ä¸º0ï¼Œè¯´æ˜ŽåŠ è½½æˆåŠŸï¼Œç¨‹åºå¯ä»¥ç»§ç»­
 	{
-		if (gethostname(name, sizeof(name)) == 0)		//³É¹¦µØ½«±¾µØÖ÷»úÃû´æ·ÅÈëÓÉname²ÎÊýÖ¸¶¨µÄ»º³åÇøÖÐ
+		if (gethostname(name, sizeof(name)) == 0)		//æˆåŠŸåœ°å°†æœ¬åœ°ä¸»æœºåå­˜æ”¾å…¥ç”±nameå‚æ•°æŒ‡å®šçš„ç¼“å†²åŒºä¸­
 		{
-			if ((hostinfo = gethostbyname(name)) != NULL) //ÕâÊÇ»ñÈ¡Ö÷»úÃû
+			if ((hostinfo = gethostbyname(name)) != NULL) //è¿™æ˜¯èŽ·å–ä¸»æœºå
 			{
-				settextstyle(BBLACK / 2, 0, "·½ÕýÒ¦Ìå");
-				outtextxy(WINDOWS_X / 2 - 5 * BBLACK / 2, BBLACK * 2, "Ä«¹¥ÆåÕó ·þÎñÆ÷ÒÑ´´½¨");
-				settextstyle(BBLACK / 4, 0, "¿¬Ìå");
-				ip = inet_ntoa(*(struct in_addr *)*hostinfo->h_addr_list);   //µ÷ÓÃinet_ntoa£¨£©º¯Êý£¬½«hostinfo½á¹¹±äÁ¿ÖÐµÄh_addr_list×ª»¯Îª±ê×¼µÄµã·Ö±íÊ¾µÄIP
-				char c[250] = { "1.¸æËßÄãµÄÍ¬Ñ§Õâ¸öipµØÖ·¾Í¿ÉÒÔÁª»úÀ²~" };
+				settextstyle(BBLACK / 2, 0, "æ–¹æ­£å§šä½“");
+				outtextxy(WINDOWS_X / 2 - 5 * BBLACK / 2, BBLACK * 2, "å¢¨æ”»æ£‹é˜µ æœåŠ¡å™¨å·²åˆ›å»º");
+				settextstyle(BBLACK / 4, 0, "æ¥·ä½“");
+				ip = inet_ntoa(*(struct in_addr *)*hostinfo->h_addr_list);   //è°ƒç”¨inet_ntoaï¼ˆï¼‰å‡½æ•°ï¼Œå°†hostinfoç»“æž„å˜é‡ä¸­çš„h_addr_listè½¬åŒ–ä¸ºæ ‡å‡†çš„ç‚¹åˆ†è¡¨ç¤ºçš„IP
+				char c[250] = { "1.å‘Šè¯‰ä½ çš„åŒå­¦è¿™ä¸ªipåœ°å€å°±å¯ä»¥è”æœºå•¦~" };
 				strcat_s(c, ip);
 				outtextxy(WINDOWS_X / 2 - 3 * BBLACK, BBLACK * 7 / 2, c);
-				outtextxy(WINDOWS_X / 2 - 3 * BBLACK, BBLACK * 4, "2.²»¹ýÒªÏÈÈ·±£ÄãÃÇÔÚÍ¬Ò»¸ö¾ÖÓòÍøÏÂÅ¶£¡");
+				outtextxy(WINDOWS_X / 2 - 3 * BBLACK, BBLACK * 4, "2.ä¸è¿‡è¦å…ˆç¡®ä¿ä½ ä»¬åœ¨åŒä¸€ä¸ªå±€åŸŸç½‘ä¸‹å“¦ï¼");
 			}
 		}
-		WSACleanup();										//Ð¶ÔØWinsock¿â£¬²¢ÊÍ·ÅËùÓÐ×ÊÔ´
+		WSACleanup();										//å¸è½½Winsockåº“ï¼Œå¹¶é‡Šæ”¾æ‰€æœ‰èµ„æº
 	}
 }
 
-POINT2 OURCLASS()									//½âÎö¶Ô·½·¢ËÍµÄÊý¾Ý
+POINT2 OURCLASS()									//è§£æžå¯¹æ–¹å‘é€çš„æ•°æ®
 {
 	POINT2 YOU;
 	char data[50] = { 0 };
@@ -802,15 +803,15 @@ POINT2 OURCLASS()									//½âÎö¶Ô·½·¢ËÍµÄÊý¾Ý
 	if (p == SOCKET_ERROR)
 	{
 		HWND wnd = GetHWnd();
-		MessageBox(wnd, "¶Ô·½ÒÑÖÐ¶Ï³ÌÐò»òÒÑµôÏß,ÇëÖØÆô³ÌÐò", "Á¬½ÓÖÐ¶Ï", MB_OK | MB_ICONWARNING);
+		MessageBox(wnd, "å¯¹æ–¹å·²ä¸­æ–­ç¨‹åºæˆ–å·²æŽ‰çº¿,è¯·é‡å¯ç¨‹åº", "è¿žæŽ¥ä¸­æ–­", MB_OK | MB_ICONWARNING);
 		exit(0);
 	}
-	sscanf_s(data, "%d,%d", &x, &y);				//±£´æÔÚ±äÁ¿ÖÐ
+	sscanf_s(data, "%d,%d", &x, &y);				//ä¿å­˜åœ¨å˜é‡ä¸­
 	YOU.INIT(x, y);
 	return YOU;
 }
 
-void TOI(bool FUORKE)								//Áª»úÄ£Ê½
+void TOI(bool FUORKE)								//è”æœºæ¨¡å¼
 {
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -826,43 +827,43 @@ void TOI(bool FUORKE)								//Áª»úÄ£Ê½
 	SOCKADDR_IN addrSer;
 	if (FUORKE)
 	{
-		Get_ip();										//´´½¨·þÎñÆ÷
+		Get_ip();										//åˆ›å»ºæœåŠ¡å™¨
 		sockSer = socket(AF_INET, SOCK_STREAM, 0);
 	}
 	else
 	{
-		settextstyle(BBLACK / 2, 0, "·½ÕýÒ¦Ìå");
-		outtextxy(WINDOWS_X / 2 - 3 * BBLACK / 2, BBLACK * 3 / 2, "Ä«¹¥ÆåÕóµÄÁ¬½Ó");
-		settextstyle(BBLACK / 4, 0, "¿¬Ìå");
-		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 5 / 2, "1¡¢ÇëÈ·±£·þÎñ¶ËÒÑÕý³£Æô¶¯");
-		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 3, "2¡¢ÇëÈ·±£ÄãºÍÅóÓÑÔÚÍ¬Ò»¾ÖÓòÍøÏÂ");
+		settextstyle(BBLACK / 2, 0, "æ–¹æ­£å§šä½“");
+		outtextxy(WINDOWS_X / 2 - 3 * BBLACK / 2, BBLACK * 3 / 2, "å¢¨æ”»æ£‹é˜µçš„è¿žæŽ¥");
+		settextstyle(BBLACK / 4, 0, "æ¥·ä½“");
+		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 5 / 2, "1ã€è¯·ç¡®ä¿æœåŠ¡ç«¯å·²æ­£å¸¸å¯åŠ¨");
+		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 3, "2ã€è¯·ç¡®ä¿ä½ å’Œæœ‹å‹åœ¨åŒä¸€å±€åŸŸç½‘ä¸‹");
 		ip = (char*)malloc(sizeof(char) * 50);
-		InputBox(ip, 50, "ÇëÊäÈë·þÎñ¶ËµÄIPµØÖ·");
+		InputBox(ip, 50, "è¯·è¾“å…¥æœåŠ¡ç«¯çš„IPåœ°å€");
 		sockConn = socket(AF_INET, SOCK_STREAM, 0);
 	}
 	addrSer.sin_family = AF_INET;
 	addrSer.sin_port = htons(5050);
 	addrSer.sin_addr.S_un.S_addr = inet_addr(ip);
-	if (FUORKE)											//Èç¹ûÎª·þÎñ¶Ë
+	if (FUORKE)											//å¦‚æžœä¸ºæœåŠ¡ç«¯
 	{
 		SOCKADDR_IN addrCli;
 		bind(sockSer, (SOCKADDR*)&addrSer, sizeof(SOCKADDR));
 		listen(sockSer, 5);
 		int len = sizeof(SOCKADDR);
-		settextstyle(BBLACK / 4, 0, "¿¬Ìå");
-		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 5, "·þÎñÆ÷ÒÑ´´½¨£¬µÈ´ýÁ¬½ÓÖÐ...");
+		settextstyle(BBLACK / 4, 0, "æ¥·ä½“");
+		outtextxy(WINDOWS_X / 2 - 2 * BBLACK, BBLACK * 5, "æœåŠ¡å™¨å·²åˆ›å»ºï¼Œç­‰å¾…è¿žæŽ¥ä¸­...");
 		sockConn = accept(sockSer, (SOCKADDR*)&addrCli, &len);
 	}
 	else res = connect(sockConn, (SOCKADDR*)&addrSer, sizeof(SOCKADDR));
 	if (sockConn == INVALID_SOCKET || res)
 	{
-		outtextxy(2 * BBLACK, BBLACK * 6, "Á¬½ÓÊ§°Ü£¡");
+		outtextxy(2 * BBLACK, BBLACK * 6, "è¿žæŽ¥å¤±è´¥ï¼");
 		_getch();
-		gameStart();									//·µ»ØÖ÷½çÃæ
+		gameStart();									//è¿”å›žä¸»ç•Œé¢
 	}
 	else
 	{
-		outtextxy(2 * BBLACK, BBLACK * 6, "Á¬½Ó³É¹¦£¡µã»÷ÈÎÒâ¼ü½øÈëÓÎÏ·~");
+		outtextxy(2 * BBLACK, BBLACK * 6, "è¿žæŽ¥æˆåŠŸï¼ç‚¹å‡»ä»»æ„é”®è¿›å…¥æ¸¸æˆ~");
 		_getch();
 	}
 }
@@ -871,61 +872,61 @@ void gameStart()
 {
 	IMAGE MM[11] = { 0 }, MB[3] = { 0 };
 	initgraph(WINDOWS_X, WINDOWS_Y);
-	setbkmode(TRANSPARENT);					//Í¸Ã÷×ÖÌå
+	setbkmode(TRANSPARENT);					//é€æ˜Žå­—ä½“
 
-	HWND hwnd = GetHWnd();					// ÉèÖÃ´°¿Ú±êÌâÎÄ×Ö
-	SetWindowText(hwnd, "Ä«¹¥ÆåÕó --- Ç§Ç§");
+	HWND hwnd = GetHWnd();					// è®¾ç½®çª—å£æ ‡é¢˜æ–‡å­—
+	SetWindowText(hwnd, "å¢¨æ”»æ£‹é˜µ --- åƒåƒ");
 	loadimage(NULL, "0.jpg");
 
 	const int bblack = 10;
 
 	LOGFONT f;
-	gettextstyle(&f);												// »ñÈ¡×ÖÌåÑùÊ½
-	f.lfHeight = BBLACK;												// ÉèÖÃ×ÖÌå¸ß¶È
-	strcpy_s(f.lfFaceName, _T("·½ÕýÒ¦Ìå"));								// ÉèÖÃ×ÖÌå
-	f.lfQuality = ANTIALIASED_QUALITY;								// ÉèÖÃÊä³öÐ§¹ûÎª¿¹¾â³Ý  
-	settextstyle(&f);												// ÉèÖÃ×ÖÌåÑùÊ½
+	gettextstyle(&f);												// èŽ·å–å­—ä½“æ ·å¼
+	f.lfHeight = BBLACK;												// è®¾ç½®å­—ä½“é«˜åº¦
+	strcpy_s(f.lfFaceName, _T("æ–¹æ­£å§šä½“"));								// è®¾ç½®å­—ä½“
+	f.lfQuality = ANTIALIASED_QUALITY;								// è®¾ç½®è¾“å‡ºæ•ˆæžœä¸ºæŠ—é”¯é½¿
+	settextstyle(&f);												// è®¾ç½®å­—ä½“æ ·å¼
 	RECT r1 = { 0, 0, WINDOWS_X, WINDOWS_Y / 3 };
-	drawtext("Ä« ¹¥ Æå Õó", &r1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("å¢¨ æ”» æ£‹ é˜µ", &r1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-	settextstyle(BBLACK / 4, 0, "·½ÕýÒ¦Ìå");
+	settextstyle(BBLACK / 4, 0, "æ–¹æ­£å§šä½“");
 	RECT r2 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3,WINDOWS_X / 2 + BBLACK ,WINDOWS_Y / 3 + BBLACK / 2 };
 	rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3, WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK / 2);
-	drawtext("µ¥ÈËÄ£Ê½", &r2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("å•äººæ¨¡å¼", &r2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r3 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK / 2 + bblack,WINDOWS_X / 2 + BBLACK,WINDOWS_Y / 3 + BBLACK + bblack };
 	rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK / 2 + bblack, WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK + bblack);
-	drawtext("Ë«ÈËÄ£Ê½", &r3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("åŒäººæ¨¡å¼", &r3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r4 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK + 2 * bblack,WINDOWS_X / 2 + BBLACK,(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) };
 	rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK + 2 * bblack, WINDOWS_X / 2 + BBLACK, (int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack));
-	drawtext("Áª»ú¶ÔÕ½", &r4, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("è”æœºå¯¹æˆ˜", &r4, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r5 = { WINDOWS_X / 2 - BBLACK,(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 3 * bblack),WINDOWS_X / 2 + BBLACK,WINDOWS_Y / 3 + BBLACK * 2 + 3 * bblack };
 	rectangle(WINDOWS_X / 2 - BBLACK, (int)(WINDOWS_Y / 3 + BBLACK*1.5 + 3 * bblack), WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK * 2 + 3 * bblack);
-	drawtext("¹ÛÕ½Ä£Ê½", &r5, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("è§‚æˆ˜æ¨¡å¼", &r5, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r6 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack,WINDOWS_X / 2 + BBLACK,(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) };
 	rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack, WINDOWS_X / 2 + BBLACK, (int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack));
-	drawtext("ÓÎÏ·½éÉÜ", &r6, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("æ¸¸æˆä»‹ç»", &r6, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r7 = { WINDOWS_X / 2 - BBLACK,(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 5 * bblack),WINDOWS_X / 2 + BBLACK,WINDOWS_Y / 3 + BBLACK * 3 + 5 * bblack };
 	rectangle(WINDOWS_X / 2 - BBLACK, (int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 5 * bblack), WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK * 3 + 5 * bblack);
-	drawtext("²Ù×÷ËµÃ÷", &r7, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("æ“ä½œè¯´æ˜Ž", &r7, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r8 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK * 3 + 6 * bblack,WINDOWS_X / 2 + BBLACK,(int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 6 * bblack) };
 	rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK * 3 + 6 * bblack, WINDOWS_X / 2 + BBLACK, (int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 6 * bblack));
-	drawtext("¹Ø    ÓÚ", &r8, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("å…³    äºŽ", &r8, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 	RECT r9 = { WINDOWS_X / 2 - BBLACK,(int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 7 * bblack),WINDOWS_X / 2 + BBLACK,WINDOWS_Y / 3 + BBLACK * 4 + 7 * bblack };
 	rectangle(WINDOWS_X / 2 - BBLACK, (int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 7 * bblack), WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK * 4 + 7 * bblack);
-	drawtext("ÍË³öÓÎÏ·", &r9, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext("é€€å‡ºæ¸¸æˆ", &r9, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-	for (int i = 0; i < 8; i++)																						//±£´æ°´Å¥Í¼Æ¬
+	for (int i = 0; i < 8; i++)																						//ä¿å­˜æŒ‰é’®å›¾ç‰‡
 		getimage(MM + i, WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + i*bblack + i*BBLACK / 2, 2 * BBLACK, BBLACK / 2);
 	getimage(MM + 8, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, BBLACK - 11, BBLACK / 2 - 11);
 
-	bool _HOME = true, _INTRODUCTION = false, _OPERATION = false, _ABOUT = false, _TOINTERNET = false, _DRMS = false;			//TRUE±íÊ¾´¦ÓÚµ±Ç°Ò³Ãæ
+	bool _HOME = true, _INTRODUCTION = false, _OPERATION = false, _ABOUT = false, _TOINTERNET = false, _DRMS = false;			//TRUEè¡¨ç¤ºå¤„äºŽå½“å‰é¡µé¢
 	MOUSEMSG m;
 	while (_HOME)
 	{
@@ -933,26 +934,26 @@ void gameStart()
 		m = GetMouseMsg();
 		switch (m.uMsg)
 		{
-		case WM_LBUTTONDOWN:												//µ±Êó±ê×ó¼ü»÷ÏÂÊ±
+		case WM_LBUTTONDOWN:												//å½“é¼ æ ‡å·¦é”®å‡»ä¸‹æ—¶
 			EndBatchDraw();
-			if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 && m.y<WINDOWS_Y / 3 + BBLACK / 2 && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//µ¥ÈËÄ£Ê½
+			if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 && m.y<WINDOWS_Y / 3 + BBLACK / 2 && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//å•äººæ¨¡å¼
 			{
-				_DRMS = true;									//Àë¿ªHOME½çÃæ
+				_DRMS = true;									//ç¦»å¼€HOMEç•Œé¢
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
 
 				RECT r1 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3,WINDOWS_X / 2 + BBLACK ,WINDOWS_Y / 3 + BBLACK / 2 };
 				rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3, WINDOWS_X / 2 + BBLACK, WINDOWS_Y / 3 + BBLACK / 2);
-				drawtext("¼ò    µ¥", &r1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("ç®€    å•", &r1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 				RECT r2 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK + 2 * bblack,WINDOWS_X / 2 + BBLACK,(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) };
 				rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK + 2 * bblack, WINDOWS_X / 2 + BBLACK, (int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack));
-				drawtext("ÖÐ    µÈ", &r2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("ä¸­    ç­‰", &r2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 				RECT r3 = { WINDOWS_X / 2 - BBLACK,WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack,WINDOWS_X / 2 + BBLACK,(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) };
 				rectangle(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack, WINDOWS_X / 2 + BBLACK, (int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack));
-				drawtext("À§    ÄÑ", &r3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("å›°    éš¾", &r3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 				for (int i = 0; i < 3; i++)
 				{
@@ -961,122 +962,122 @@ void gameStart()
 
 				RECT R = { WINDOWS_X - BBLACK,WINDOWS_Y - BBLACK / 2,WINDOWS_X - 10,WINDOWS_Y - 10 };
 				rectangle(WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, WINDOWS_X - 10, WINDOWS_Y - 10);
-				drawtext("·µ»Ø", &R, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("è¿”å›ž", &R, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 && m.y<WINDOWS_Y / 3 + BBLACK / 2 && _DRMS)			//¼òµ¥
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 && m.y<WINDOWS_Y / 3 + BBLACK / 2 && _DRMS)			//ç®€å•
 			{
 				_HOME = false;
 				cleardevice();
 				init();
-				STARTVS(black, MOUSE, Easy);							//µ¥ÈË¼òµ¥Ä£Ê½
+				STARTVS(black, MOUSE, Easy);							//å•äººç®€å•æ¨¡å¼
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK + 2 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) && _DRMS)			//ÖÐµÈ
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK + 2 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) && _DRMS)			//ä¸­ç­‰
 			{
 				_HOME = false;
 				cleardevice();
 				init();
-				STARTVS(black, MOUSE, Middle);							//µ¥ÈËÖÐµÈÄ£Ê½
+				STARTVS(black, MOUSE, Middle);							//å•äººä¸­ç­‰æ¨¡å¼
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y> WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) && _DRMS)			//À§ÄÑ
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y> WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) && _DRMS)			//å›°éš¾
 			{
 				_HOME = false;
 				cleardevice();
 				init();
-				STARTVS(black, MOUSE, Difficult);							//µ¥ÈËÀ§ÄÑÄ£Ê½
+				STARTVS(black, MOUSE, Difficult);							//å•äººå›°éš¾æ¨¡å¼
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK / 2 + bblack && m.y<WINDOWS_Y / 3 + BBLACK + bblack && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//Ë«ÈËÄ£Ê½
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK / 2 + bblack && m.y<WINDOWS_Y / 3 + BBLACK + bblack && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//åŒäººæ¨¡å¼
 			{
-				_HOME = false;									//Àë¿ªHOME½çÃæ
+				_HOME = false;									//ç¦»å¼€HOMEç•Œé¢
 				init();
-				STARTVS(-1, MOUSE, MOUSE);							//Ë«ÈËÄ£Ê½
+				STARTVS(-1, MOUSE, MOUSE);							//åŒäººæ¨¡å¼
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK + 2 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) && _HOME   && !_OPERATION&&!_ABOUT && !_INTRODUCTION&&!_TOINTERNET&&!_DRMS)//Áª»ú¶ÔÕ½
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK + 2 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 2 * bblack) && _HOME   && !_OPERATION&&!_ABOUT && !_INTRODUCTION&&!_TOINTERNET&&!_DRMS)//è”æœºå¯¹æˆ˜
 			{
 				_TOINTERNET = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
 				RECT R1 = { WINDOWS_X / 4, WINDOWS_Y / 2 + BBLACK, WINDOWS_X / 4 + 2 * BBLACK , WINDOWS_Y / 2 + 2 * BBLACK };
 				RECT R3 = { WINDOWS_X - WINDOWS_X / 4 - 2 * BBLACK, WINDOWS_Y / 2 + BBLACK, WINDOWS_X - WINDOWS_X / 4, WINDOWS_Y / 2 + 2 * BBLACK };
 				rectangle(WINDOWS_X / 4, WINDOWS_Y / 2 + BBLACK, WINDOWS_X / 4 + 2 * BBLACK, WINDOWS_Y / 2 + 2 * BBLACK);
 				rectangle(WINDOWS_X - WINDOWS_X / 4 - 2 * BBLACK, WINDOWS_Y / 2 + BBLACK, WINDOWS_X - WINDOWS_X / 4, WINDOWS_Y / 2 + 2 * BBLACK);
-				drawtext("ÎÒÒª´´½¨", &R1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				drawtext("ÎÒÒªÁ¬½Ó", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("æˆ‘è¦åˆ›å»º", &R1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("æˆ‘è¦è¿žæŽ¥", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				getimage(MM + 9, WINDOWS_X / 4, WINDOWS_Y / 2 + BBLACK, 2 * BBLACK, BBLACK);
 				getimage(MM + 10, WINDOWS_X - WINDOWS_X / 4 - 2 * BBLACK, WINDOWS_Y / 2 + BBLACK, 2 * BBLACK, BBLACK);
 
-				outtextxy(WINDOWS_X / 3 - 50, 150, "Á¬½ÓËµÃ÷£º");
-				outtextxy(WINDOWS_X / 3, 185, "1¡¢µã»÷¡°ÎÒÒª´´½¨¡±´´½¨·þÎñÆ÷");
-				outtextxy(WINDOWS_X / 3, 220, "2¡¢ÈÃÄãµÄÅóÓÑ½øÈë¡°ÎÒÒªÁ¬½Ó¡±");
-				outtextxy(WINDOWS_X / 3, 255, "3¡¢ÊäÈë·þÎñÆ÷ipµØÖ·");
-				outtextxy(WINDOWS_X / 3, 290, "4¡¢½øÈëÓÎÏ·");
-				outtextxy(WINDOWS_X / 3, 325, "*ÇëÈ·±£ÄãÃÇÔÚÍ¬Ò»¸ö¾ÖÓòÍøÏÂÅ¶~");
+				outtextxy(WINDOWS_X / 3 - 50, 150, "è¿žæŽ¥è¯´æ˜Žï¼š");
+				outtextxy(WINDOWS_X / 3, 185, "1ã€ç‚¹å‡»â€œæˆ‘è¦åˆ›å»ºâ€åˆ›å»ºæœåŠ¡å™¨");
+				outtextxy(WINDOWS_X / 3, 220, "2ã€è®©ä½ çš„æœ‹å‹è¿›å…¥â€œæˆ‘è¦è¿žæŽ¥â€");
+				outtextxy(WINDOWS_X / 3, 255, "3ã€è¾“å…¥æœåŠ¡å™¨ipåœ°å€");
+				outtextxy(WINDOWS_X / 3, 290, "4ã€è¿›å…¥æ¸¸æˆ");
+				outtextxy(WINDOWS_X / 3, 325, "*è¯·ç¡®ä¿ä½ ä»¬åœ¨åŒä¸€ä¸ªå±€åŸŸç½‘ä¸‹å“¦~");
 				RECT R2 = { WINDOWS_X - BBLACK,WINDOWS_Y - BBLACK / 2,WINDOWS_X - 10,WINDOWS_Y - 10 };
 				rectangle(WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, WINDOWS_X - 10, WINDOWS_Y - 10);
-				drawtext("·µ»Ø", &R2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("è¿”å›ž", &R2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				break;
 			}
-			else if (m.x>WINDOWS_X / 4 && m.x<WINDOWS_X / 4 + 2 * BBLACK  && m.y>WINDOWS_Y / 2 + BBLACK && m.y<WINDOWS_Y / 2 + 2 * BBLACK && _TOINTERNET)//ÎÒÒª´´½¨
+			else if (m.x>WINDOWS_X / 4 && m.x<WINDOWS_X / 4 + 2 * BBLACK  && m.y>WINDOWS_Y / 2 + BBLACK && m.y<WINDOWS_Y / 2 + 2 * BBLACK && _TOINTERNET)//æˆ‘è¦åˆ›å»º
 			{
 				TOINTERNET = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
-				TOI(true);								//´´½¨·þÎñÆ÷
+				TOI(true);								//åˆ›å»ºæœåŠ¡å™¨
 				init();
 				STARTVS(white, OURCLASS, MOUSE);
 				break;
 			}
-			else if (m.x>WINDOWS_X - WINDOWS_X / 4 - 2 * BBLACK && m.x<WINDOWS_X - WINDOWS_X / 4 && m.y>WINDOWS_Y / 2 + BBLACK && m.y<WINDOWS_Y / 2 + 2 * BBLACK && _TOINTERNET)//ÎÒÒªÁ¬½Ó
+			else if (m.x>WINDOWS_X - WINDOWS_X / 4 - 2 * BBLACK && m.x<WINDOWS_X - WINDOWS_X / 4 && m.y>WINDOWS_Y / 2 + BBLACK && m.y<WINDOWS_Y / 2 + 2 * BBLACK && _TOINTERNET)//æˆ‘è¦è¿žæŽ¥
 			{
 				TOINTERNET = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
-				TOI(false);								//Á¬½Ó·þÎñÆ÷
+				TOI(false);								//è¿žæŽ¥æœåŠ¡å™¨
 				init();
 				STARTVS(black, MOUSE, OURCLASS);
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 3 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 2 + 3 * bblack && _HOME  &&!_OPERATION&&!_ABOUT && !_INTRODUCTION&&!_TOINTERNET&&!_DRMS)		//¹ÛÕ½Ä£Ê½
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK*1.5 + 3 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 2 + 3 * bblack && _HOME  &&!_OPERATION&&!_ABOUT && !_INTRODUCTION&&!_TOINTERNET&&!_DRMS)		//è§‚æˆ˜æ¨¡å¼
 			{
-				_HOME = false;										//Àë¿ªHOME½çÃæ
+				_HOME = false;										//ç¦»å¼€HOMEç•Œé¢
 				init();
-				STARTVS(-1, Middle,Difficult );								//¹ÛÕ½Ä£Ê½
+				STARTVS(-1, Middle,Difficult );								//è§‚æˆ˜æ¨¡å¼
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y> WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) && _HOME &&!_INTRODUCTION&&!_ABOUT&&!_OPERATION&&!_TOINTERNET&&!_DRMS)	//ÓÎÏ·½éÉÜ
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y> WINDOWS_Y / 3 + BBLACK * 2 + 4 * bblack && m.y<(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 4 * bblack) && _HOME &&!_INTRODUCTION&&!_ABOUT&&!_OPERATION&&!_TOINTERNET&&!_DRMS)	//æ¸¸æˆä»‹ç»
 			{
 				_INTRODUCTION = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				string data[16] = {
-					"ÓÎÏ·½éÉÜ£º" ,
-					"Îå²½Ö®ÄÚ£¬°ÙÈË²»µ±",
-					"Ê®ÄêÄ¥½££¬Ò»¹ÂÏÀµÀ",
-					"Ç§Àï»Ó¸ê£¬ÍòÖÚ¸©Ê×",
-					"ËÄº£½­ºþ£¬°ÙÊÀÍõµÀ",
-					"Ã¿Ò»¸öÀ´µ½Ä«ÎÊµÄÈË ¶¼»áÃæÁÙÑ¡Ôñ",
-					"ÌìÏÂ½Ô°× Î¨ÎÒ¶ÀºÚ",
-					"ÃñÉúÍ¿Ì¿ ÄÎÖ®ÈôºÎ",
-					"Ä«ÃÅ¾øÊõ ¿Ë¶ø²»¹¥",
-					"°Ëºá°Ë×Ý ¼æ°®Æ½Éú",
-					"Ä«¼ÒÖ÷ÕÅ·Ç¹¥¼æ°® Òª»ñµÃÊ¤Àû",
-					"²¢·ÇÒ»¶¨ÒªÍ¨¹ýÉ±Â¾ ¹¥³ÇÎªÏÂ ¹¥ÐÄÎªÉÏ",
-					"Ä«¹¥Æå¾Ö Æå×ÓËäÈ»²»¶à",
-					"µ«ÊÇµÐÎÒË«·½µÄ×ª»¯ È´ÊÇÇ§±äÍò»¯ ²½²½¾ªÐÄ",
+					"æ¸¸æˆä»‹ç»ï¼š" ,
+					"äº”æ­¥ä¹‹å†…ï¼Œç™¾äººä¸å½“",
+					"åå¹´ç£¨å‰‘ï¼Œä¸€å­¤ä¾ é“",
+					"åƒé‡ŒæŒ¥æˆˆï¼Œä¸‡ä¼—ä¿¯é¦–",
+					"å››æµ·æ±Ÿæ¹–ï¼Œç™¾ä¸–çŽ‹é“",
+					"æ¯ä¸€ä¸ªæ¥åˆ°å¢¨é—®çš„äºº éƒ½ä¼šé¢ä¸´é€‰æ‹©",
+					"å¤©ä¸‹çš†ç™½ å”¯æˆ‘ç‹¬é»‘",
+					"æ°‘ç”Ÿæ¶‚ç‚­ å¥ˆä¹‹è‹¥ä½•",
+					"å¢¨é—¨ç»æœ¯ å…‹è€Œä¸æ”»",
+					"å…«æ¨ªå…«çºµ å…¼çˆ±å¹³ç”Ÿ",
+					"å¢¨å®¶ä¸»å¼ éžæ”»å…¼çˆ± è¦èŽ·å¾—èƒœåˆ©",
+					"å¹¶éžä¸€å®šè¦é€šè¿‡æ€æˆ® æ”»åŸŽä¸ºä¸‹ æ”»å¿ƒä¸ºä¸Š",
+					"å¢¨æ”»æ£‹å±€ æ£‹å­è™½ç„¶ä¸å¤š",
+					"ä½†æ˜¯æ•Œæˆ‘åŒæ–¹çš„è½¬åŒ– å´æ˜¯åƒå˜ä¸‡åŒ– æ­¥æ­¥æƒŠå¿ƒ",
 				};
 
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
-				settextstyle(BBLACK / 2 - 5, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 2 - 5, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(RGB(0, 255, 255));
 				outtextxy(WINDOWS_X / 3 - 100, 90, data[0].data());
-				settextstyle(BBLACK / 4, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 4, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(WHITE);
 				int LEFT, TOP = 115;
 				for (int i = 1; i < 16; i++)
@@ -1088,38 +1089,38 @@ void gameStart()
 				}
 				RECT R1 = { WINDOWS_X - BBLACK,WINDOWS_Y - BBLACK / 2,WINDOWS_X - 10,WINDOWS_Y - 10 };
 				rectangle(WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, WINDOWS_X - 10, WINDOWS_Y - 10);
-				drawtext("·µ»Ø", &R1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("è¿”å›ž", &R1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				break;
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 5 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 3 + 5 * bblack && _HOME &&!_INTRODUCTION &&!_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)	//²Ù×÷ËµÃ÷
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK * 2.5 + 5 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 3 + 5 * bblack && _HOME &&!_INTRODUCTION &&!_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)	//æ“ä½œè¯´æ˜Ž
 			{
 				_OPERATION = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				string data[16] = {
-					"²Ù×÷ËµÃ÷£º" ,
-					"°à´óÊ¦£º",
-					"ÍõµÀÖ®ÊÒÖÐ ²»ÊÇÆÕÍ¨µÄÆå¾Ö",
-					"¶øÊÇ¸ù¾Ý±¾ÃÅ¾øÑ§¾«ËèÉè¼Æ¶ø³ÉµÄÄ«¹¥ÆåÕó",
-					"Ä«¹¥ÆåÕóÓëÎ§ÆåÃ÷ÏÔµÄ²»Í¬¾ÍÊÇ",
-					"Ä«¹¥Æå¾ÖÖÐ²»»áÓÐÈÎºÎÆå×Ó±»É±ËÀ",
-					"µ±Ò»·½µÄÆå×Ó±»ÁíÒ»·½Æå×ÓÇ°ºóÎ§¶Â",
-					"ÄÇÕâÐ©Æå×Ó¾Í×ª»¯³ÉÁíÒ»·½",
-					"µ±È» Èç¹ûÕâÐ©Æå×ÓÓÖ±»Î§¶ÂÊ±",
-					"»¹¿ÉÒÔÔÙ´Î×ª»¯",
-					"×îºóÁùÊ®ËÄ¸ñÆåÅÌ²¼ÂúÊ±¾Í¿´Ë«·½Ë­µÄÆå×ÓÊýÁ¿¶à",
-					"ÄÄÒ»·½¾Í»ñÊ¤",
-					"Ä«¹¥Æå¾Ö Ã¿Ò»´ÎÂä×Ó±ØÐëÒªÐÎ³É×ª»»",
-					"Èç¹û¶Ô·½Ã»ÓÐ¿É±»×ª»»µÄÆå×ÓÊ±",
-					"ÕâÖÖÇé¿ö ±¾·½¾ÍÖ»ÄÜ·ÅÆúÕâÒ»ÂÖ³öÊÖ",
-					"ÄÜ¹»°Ñ¶ÔÊÖ±ÆÈëÕâÖÖÀ§¾³ ¾Í½Ð×÷ÆÆÕó ÊÇ×îÀ÷º¦µÄÕÐÊý",
+					"æ“ä½œè¯´æ˜Žï¼š" ,
+					"ç­å¤§å¸ˆï¼š",
+					"çŽ‹é“ä¹‹å®¤ä¸­ ä¸æ˜¯æ™®é€šçš„æ£‹å±€",
+					"è€Œæ˜¯æ ¹æ®æœ¬é—¨ç»å­¦ç²¾é«“è®¾è®¡è€Œæˆçš„å¢¨æ”»æ£‹é˜µ",
+					"å¢¨æ”»æ£‹é˜µä¸Žå›´æ£‹æ˜Žæ˜¾çš„ä¸åŒå°±æ˜¯",
+					"å¢¨æ”»æ£‹å±€ä¸­ä¸ä¼šæœ‰ä»»ä½•æ£‹å­è¢«æ€æ­»",
+					"å½“ä¸€æ–¹çš„æ£‹å­è¢«å¦ä¸€æ–¹æ£‹å­å‰åŽå›´å µ",
+					"é‚£è¿™äº›æ£‹å­å°±è½¬åŒ–æˆå¦ä¸€æ–¹",
+					"å½“ç„¶ å¦‚æžœè¿™äº›æ£‹å­åˆè¢«å›´å µæ—¶",
+					"è¿˜å¯ä»¥å†æ¬¡è½¬åŒ–",
+					"æœ€åŽå…­åå››æ ¼æ£‹ç›˜å¸ƒæ»¡æ—¶å°±çœ‹åŒæ–¹è°çš„æ£‹å­æ•°é‡å¤š",
+					"å“ªä¸€æ–¹å°±èŽ·èƒœ",
+					"å¢¨æ”»æ£‹å±€ æ¯ä¸€æ¬¡è½å­å¿…é¡»è¦å½¢æˆè½¬æ¢",
+					"å¦‚æžœå¯¹æ–¹æ²¡æœ‰å¯è¢«è½¬æ¢çš„æ£‹å­æ—¶",
+					"è¿™ç§æƒ…å†µ æœ¬æ–¹å°±åªèƒ½æ”¾å¼ƒè¿™ä¸€è½®å‡ºæ‰‹",
+					"èƒ½å¤ŸæŠŠå¯¹æ‰‹é€¼å…¥è¿™ç§å›°å¢ƒ å°±å«ä½œç ´é˜µ æ˜¯æœ€åŽ‰å®³çš„æ‹›æ•°",
 				};
 
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
-				settextstyle(BBLACK / 2 - 5, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 2 - 5, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(RGB(0, 255, 255));
 				outtextxy(WINDOWS_X / 3 - 100, 90, data[0].data());
-				settextstyle(BBLACK / 4, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 4, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(WHITE);
 				int LEFT, TOP = 115;
 				for (int i = 1; i < 16; i++)
@@ -1132,38 +1133,38 @@ void gameStart()
 				}
 				RECT R3 = { WINDOWS_X - BBLACK,WINDOWS_Y - BBLACK / 2,WINDOWS_X - 10,WINDOWS_Y - 10 };
 				rectangle(WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, WINDOWS_X - 10, WINDOWS_Y - 10);
-				drawtext("·µ»Ø", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				drawtext("è¿”å›ž", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				break;
 			}
-			else if (m.x > WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK * 3 + 6 * bblack && m.y < (int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 6 * bblack) && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//¹ØÓÚ
+			else if (m.x > WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>WINDOWS_Y / 3 + BBLACK * 3 + 6 * bblack && m.y < (int)(WINDOWS_Y / 3 + BBLACK * 3.5 + 6 * bblack) && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//å…³äºŽ
 			{
 				_ABOUT = true;
 				cleardevice();
-				loadimage(NULL, "0.jpg");				//±³¾°
+				loadimage(NULL, "0.jpg");				//èƒŒæ™¯
 				string data[16] = {
-					"¹ØÓÚ:" ,
-					"¸Ð¾õÖ÷¶¯½øÈëÕâ¸öÒ³ÃæµÄÈË¶¼ÊÇ¹ØÐÄ Ç§Ç§ µÄÈËÓ´£¡",
-					"ÔõÃ´ËµÇ§Ç§Ò²¶¼ÊÇÐÂÈËÄÇ£¡",
-					"ãÂ¶®ÎÞÖª¸Ð¾õÊ±¼ä¹ýµÃÕæµÄºÃ¿ì£¬²»Öª²»¾õ¾ÍÒª¶È¹ý´óÒ»À²~",
-					"Ö»ÊÇ²»ÏëÔÚ¿¼ÊÔÖ®ºó¿´µ½×Ô¼º»á¹Ò¿Æ o(¨s¡õ¨t)o",
-					"Ã¿´Î¸ü»»Í·Ïñ¶¼»áÕÒºÜ¾ÃºÜ¾ÃÈÇ",
-					"Ç§Ç§µÄÃÎÏëÄØ£¿²»»áËµ³öÀ´µÄ~ ÒòÎª×Ô¼ºÒ²²»ÖªµÀ",
-					"ÏëÈÃÉí±ßµÄÃ¿¸öÈË¿ªÐÄ~ ±Ï¾¹ËûÃÇÒ²Ôø¾­ÈÃÎÒ¿ªÐÄ¹ý~",
-					"#More ßÕßÕ¡­¡­",
-					"Ç§Ç§ÊÇÎÒÀ²£¡²»ÊÇÇ§çô~",
-					"±Ï¾¹ÎÒÊÇÈÃ°àÀïÎ¨Ò»Ò»¸öÏ²»¶Ç§çôµÄÅ®º¢¸ü»»³ÆºôµÄÈËÈÇ~",
-					"µ±È»¼ÌÐø½ÐÇ§Ç§Ò²Ã»ÊÂÀ²~ ÎÒ²»»á½éÒâµÄ¨r(¨s¨Œ¨t)¨q[º¦Ðß]  @µ°µ°",
-					"Ç§Ç§ÊÇ¸ö90ºó£¬àæ~",
-					"²»ÄÜÕâÃ´ËµÀ²£¬98ºó~",
-					"Ç§Ç§µÄÉúÈÕÊÇÐÂÄêµÄµÚËÄÌì n(*¨R¨Œ¨Q*)n",
-					"¶ÔÎÒËµÔªµ©¿ìÀÖµÄÍ¬Ê±Ò²¿ÉÒÔHappy  birthday  to  me!",
+					"å…³äºŽ:" ,
+					"æ„Ÿè§‰ä¸»åŠ¨è¿›å…¥è¿™ä¸ªé¡µé¢çš„äººéƒ½æ˜¯å…³å¿ƒ åƒåƒ çš„äººå“Ÿï¼",
+					"æ€Žä¹ˆè¯´åƒåƒä¹Ÿéƒ½æ˜¯æ–°äººé‚£ï¼",
+					"æ‡µæ‡‚æ— çŸ¥æ„Ÿè§‰æ—¶é—´è¿‡å¾—çœŸçš„å¥½å¿«ï¼Œä¸çŸ¥ä¸è§‰å°±è¦åº¦è¿‡å¤§ä¸€å•¦~",
+					"åªæ˜¯ä¸æƒ³åœ¨è€ƒè¯•ä¹‹åŽçœ‹åˆ°è‡ªå·±ä¼šæŒ‚ç§‘ o(â•¯â–¡â•°)o",
+					"æ¯æ¬¡æ›´æ¢å¤´åƒéƒ½ä¼šæ‰¾å¾ˆä¹…å¾ˆä¹…æƒ¹",
+					"åƒåƒçš„æ¢¦æƒ³å‘¢ï¼Ÿä¸ä¼šè¯´å‡ºæ¥çš„~ å› ä¸ºè‡ªå·±ä¹Ÿä¸çŸ¥é“",
+					"æƒ³è®©èº«è¾¹çš„æ¯ä¸ªäººå¼€å¿ƒ~ æ¯•ç«Ÿä»–ä»¬ä¹Ÿæ›¾ç»è®©æˆ‘å¼€å¿ƒè¿‡~",
+					"#More å“’å“’â€¦â€¦",
+					"åƒåƒæ˜¯æˆ‘å•¦ï¼ä¸æ˜¯åƒçŽº~",
+					"æ¯•ç«Ÿæˆ‘æ˜¯è®©ç­é‡Œå”¯ä¸€ä¸€ä¸ªå–œæ¬¢åƒçŽºçš„å¥³å­©æ›´æ¢ç§°å‘¼çš„äººæƒ¹~",
+					"å½“ç„¶ç»§ç»­å«åƒåƒä¹Ÿæ²¡äº‹å•¦~ æˆ‘ä¸ä¼šä»‹æ„çš„â•®(â•¯â–½â•°)â•­[å®³ç¾ž]  @è›‹è›‹",
+					"åƒåƒæ˜¯ä¸ª90åŽï¼Œå™«~",
+					"ä¸èƒ½è¿™ä¹ˆè¯´å•¦ï¼Œ98åŽ~",
+					"åƒåƒçš„ç”Ÿæ—¥æ˜¯æ–°å¹´çš„ç¬¬å››å¤© n(*â‰§â–½â‰¦*)n",
+					"å¯¹æˆ‘è¯´å…ƒæ—¦å¿«ä¹çš„åŒæ—¶ä¹Ÿå¯ä»¥Happy  birthday  to  me!",
 				};
 
 				rectangle(BBLACK, BBLACK, WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK);
-				settextstyle(BBLACK / 2 - 5, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 2 - 5, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(RGB(0, 255, 255));
 				outtextxy(WINDOWS_X / 3 - 100, 90, data[0].data());
-				settextstyle(BBLACK / 4, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 4, 0, "æ–¹æ­£å§šä½“");
 				settextcolor(WHITE);
 				int LEFT, TOP = 115;
 				for (int i = 1; i < 16; i++)
@@ -1176,10 +1177,10 @@ void gameStart()
 				}
 				RECT R3 = { WINDOWS_X - BBLACK,WINDOWS_Y - BBLACK / 2,WINDOWS_X - 10,WINDOWS_Y - 10 };
 				rectangle(WINDOWS_X - BBLACK, WINDOWS_Y - BBLACK / 2, WINDOWS_X - 10, WINDOWS_Y - 10);
-				drawtext("·µ»Ø", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				settextstyle(BBLACK / 4, 0, "Î¢ÈíÑÅºÚ");
+				drawtext("è¿”å›ž", &R3, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				settextstyle(BBLACK / 4, 0, "å¾®è½¯é›…é»‘");
 				string author[5] = {
-					"Author: Ç§Ç§",
+					"Author: åƒåƒ",
 					"Age: 18",
 					"Constellation: Capricorn",
 					"Email: qian1335661317@qq.com",
@@ -1189,25 +1190,25 @@ void gameStart()
 				{
 					outtextxy(5 * BBLACK / 4, WINDOWS_Y - (7 - i) * BBLACK / 2, author[i].data());
 				}
-				settextstyle(BBLACK / 4, 0, "·½ÕýÒ¦Ìå");
+				settextstyle(BBLACK / 4, 0, "æ–¹æ­£å§šä½“");
 				break;
 			}
-			else if (m.x>WINDOWS_X - BBLACK && m.x<WINDOWS_X - 10 && m.y>WINDOWS_Y - BBLACK / 2 && m.y<WINDOWS_Y - 10 && (_INTRODUCTION || _OPERATION || _ABOUT || _TOINTERNET || _DRMS))					//·µ»Ø
+			else if (m.x>WINDOWS_X - BBLACK && m.x<WINDOWS_X - 10 && m.y>WINDOWS_Y - BBLACK / 2 && m.y<WINDOWS_Y - 10 && (_INTRODUCTION || _OPERATION || _ABOUT || _TOINTERNET || _DRMS))					//è¿”å›ž
 			{
 				cleardevice();
 				_HOME = false, _INTRODUCTION = false, _OPERATION = false, _ABOUT = false, _TOINTERNET = false, _DRMS = false;
 				gameStart();
 			}
-			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK*3.5 + 7 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 4 + 7 * bblack && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//ÍË³öÓÎÏ·
+			else if (m.x>WINDOWS_X / 2 - BBLACK && m.x<WINDOWS_X / 2 + BBLACK && m.y>(int)(WINDOWS_Y / 3 + BBLACK*3.5 + 7 * bblack) && m.y<WINDOWS_Y / 3 + BBLACK * 4 + 7 * bblack && _HOME  && !_INTRODUCTION  && !_OPERATION&&!_ABOUT&&!_TOINTERNET&&!_DRMS)//é€€å‡ºæ¸¸æˆ
 			{
 				exit(0);
 			}
 			else break;
-		case WM_MOUSEMOVE:									//ÒÆ¶¯Êó±ê
+		case WM_MOUSEMOVE:									//ç§»åŠ¨é¼ æ ‡
 			RECT r;
-			if (_INTRODUCTION || _OPERATION || _ABOUT || _TOINTERNET || _DRMS)				//Èç¹ûµ±Ç°´¦ÓÚÓÎÏ·½éÉÜ ²Ù×÷ËµÃ÷ »òÕß¹ØÓÚ½çÃæ »òÕßÁª»ú¶ÔÕ½½çÃæ »òÕßµ¥ÈËÄ£Ê½½çÃæ
+			if (_INTRODUCTION || _OPERATION || _ABOUT || _TOINTERNET || _DRMS)				//å¦‚æžœå½“å‰å¤„äºŽæ¸¸æˆä»‹ç» æ“ä½œè¯´æ˜Ž æˆ–è€…å…³äºŽç•Œé¢ æˆ–è€…è”æœºå¯¹æˆ˜ç•Œé¢ æˆ–è€…å•äººæ¨¡å¼ç•Œé¢
 			{
-				if (ESCEXIT)gameStart();							//²¿·Ö½çÃæ°´ESCÍË³ö
+				if (ESCEXIT)gameStart();							//éƒ¨åˆ†ç•Œé¢æŒ‰ESCé€€å‡º
 				if (m.x>WINDOWS_X - BBLACK && m.x<WINDOWS_X - 10 && m.y>WINDOWS_Y - BBLACK / 2 && m.y<WINDOWS_Y - 10)
 				{
 					r.left = WINDOWS_X - BBLACK;
@@ -1218,7 +1219,7 @@ void gameStart()
 					setfillcolor(RED);
 					fillpolygon(points, 4);
 					setbkmode(TRANSPARENT);
-					drawtext("·µ»Ø", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+					drawtext("è¿”å›ž", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				}
 				else
 				{
@@ -1226,7 +1227,7 @@ void gameStart()
 					{
 						putimage(WINDOWS_X - BBLACK + 1, WINDOWS_Y - BBLACK / 2 + 1, MM + 8);
 						setbkmode(TRANSPARENT);
-						drawtext("·µ»Ø", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+						drawtext("è¿”å›ž", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 					}
 				}
 				if (_DRMS)
@@ -1246,13 +1247,13 @@ void gameStart()
 							switch (i)
 							{
 							case 0:
-								drawtext("¼ò    µ¥", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+								drawtext("ç®€    å•", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 								break;
 							case 1:
-								drawtext("ÖÐ    µÈ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+								drawtext("ä¸­    ç­‰", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 								break;
 							case 2:
-								drawtext("À§    ÄÑ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+								drawtext("å›°    éš¾", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 								break;
 							}
 						}
@@ -1260,12 +1261,12 @@ void gameStart()
 						{
 							if (getpixel(WINDOWS_X / 2 - BBLACK + 1, WINDOWS_Y / 3 + BBLACK*i + 2 * i * bblack + 1) == RED)
 							{
-								putimage(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK*i + 2 * i * bblack, MB + i);	//Êä³öÔ­À´Í¼Æ¬
+								putimage(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + BBLACK*i + 2 * i * bblack, MB + i);	//è¾“å‡ºåŽŸæ¥å›¾ç‰‡
 							}
 						}
 					}
 				}
-				if (_TOINTERNET)											//´¦ÓÚÁª»úÀ¸
+				if (_TOINTERNET)											//å¤„äºŽè”æœºæ 
 				{
 					if (m.x > WINDOWS_X / 4 && m.x<WINDOWS_X / 4 + 2 * BBLACK  && m.y>WINDOWS_Y / 2 + BBLACK && m.y < WINDOWS_Y / 2 + 2 * BBLACK)
 					{
@@ -1277,7 +1278,7 @@ void gameStart()
 						setfillcolor(RED);
 						fillpolygon(points, 4);
 						setbkmode(TRANSPARENT);
-						drawtext("ÎÒÒª´´½¨", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+						drawtext("æˆ‘è¦åˆ›å»º", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 					}
 					else
 					{
@@ -1296,7 +1297,7 @@ void gameStart()
 						setfillcolor(RED);
 						fillpolygon(points, 4);
 						setbkmode(TRANSPARENT);
-						drawtext("ÎÒÒªÁ¬½Ó", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+						drawtext("æˆ‘è¦è¿žæŽ¥", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 					}
 					else
 					{
@@ -1324,28 +1325,28 @@ void gameStart()
 						switch (i)
 						{
 						case 0:
-							drawtext("µ¥ÈËÄ£Ê½", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("å•äººæ¨¡å¼", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 1:
-							drawtext("Ë«ÈËÄ£Ê½", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("åŒäººæ¨¡å¼", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 2:
-							drawtext("Áª»ú¶ÔÕ½", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("è”æœºå¯¹æˆ˜", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 3:
-							drawtext("¹ÛÕ½Ä£Ê½", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("è§‚æˆ˜æ¨¡å¼", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 4:
-							drawtext("ÓÎÏ·½éÉÜ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("æ¸¸æˆä»‹ç»", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 5:
-							drawtext("²Ù×÷ËµÃ÷", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("æ“ä½œè¯´æ˜Ž", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 6:
-							drawtext("¹Ø    ÓÚ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("å…³    äºŽ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						case 7:
-							drawtext("ÍË³öÓÎÏ·", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							drawtext("é€€å‡ºæ¸¸æˆ", &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							break;
 						}
 					}
@@ -1353,7 +1354,7 @@ void gameStart()
 					{
 						if (getpixel(WINDOWS_X / 2 - BBLACK + 1, WINDOWS_Y / 3 + i*bblack + i*BBLACK / 2 + 1) == RED)
 						{
-							putimage(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + i*bblack + i*BBLACK / 2, MM + i);	//Êä³öÔ­À´Í¼Æ¬
+							putimage(WINDOWS_X / 2 - BBLACK, WINDOWS_Y / 3 + i*bblack + i*BBLACK / 2, MM + i);	//è¾“å‡ºåŽŸæ¥å›¾ç‰‡
 						}
 					}
 				}
@@ -1368,7 +1369,7 @@ void gameStart()
 
 int main()
 {
-	gameStart();					//Ö÷½çÃæ
-	closegraph();					//¹Ø±ÕÍ¼ÐÎ»¯½çÃæ
+	gameStart();					//ä¸»ç•Œé¢
+	closegraph();					//å…³é—­å›¾å½¢åŒ–ç•Œé¢
 	return 0;
 }
