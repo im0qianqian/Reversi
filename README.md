@@ -89,6 +89,6 @@
 	2、可能会出现创建服务器时候 连接失败 的情况
 
 #<h5>已修复Bug：<h5>
-<p style="padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f7f7f7;border-radius:3px;">在某方无子可走的情况下"当前执子"显示出现错误 (感谢 <a href='http://t.qq.com/wyywyy520899'>@王余阳</a>)</p>
+<div style="padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f7f7f7;border-radius:3px;">在某方无子可走的情况下"当前执子"显示出现错误 (感谢 <a href='http://t.qq.com/wyywyy520899'>@王余阳</a>)</div>
 		
 # <h4>链接 <a href="https://www.dreamwings.cn/reversi/3013.html">黑白棋中的AI</a></h4>
