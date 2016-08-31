@@ -87,5 +87,8 @@
 #<h5>已知Bug：<h5>
 	1、ESC必须通过鼠标配合才可以正常退出
 	2、可能会出现创建服务器时候 连接失败 的情况
+
+#<h5>已修复Bug：<h5>
+	1、在某方无子可走的情况下“当前执子”显示出现错误 (感谢 <a href='http://t.qq.com/wyywyy520899'>@王余阳</a>)
 		
 # <h4>链接 <a href="https://www.dreamwings.cn/reversi/3013.html">黑白棋中的AI</a></h4>
