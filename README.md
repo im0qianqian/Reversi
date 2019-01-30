@@ -86,3 +86,4 @@
 	在某方无子可走的情况下"当前执子"显示出现错误 (感谢 @王余阳)
 
 #### 链接：[黑白棋中的AI](https://www.dreamwings.cn/reversi/3013.html)
+
