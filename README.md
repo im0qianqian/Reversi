@@ -1,4 +1,7 @@
 ### **黑白棋 课程设计 + AI**
+
+[![build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/im0qianqian/Reversi) [![release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/im0qianqian/Reversi/releases) [![platform](https://img.shields.io/badge/platform-win-9cf.svg)](https://github.com/im0qianqian/Reversi/releases) [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/im0qianqian/Reversi/master/LICENSE)
+
 #### 准备
 	编程语言：C++
 	编译环境：VS2015 + EasyX
